@@ -1,0 +1,7 @@
+"C:\Program Files\JetBrains\CLion 2022.2.1\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2022.2.1/bin/ninja/win/ninja.exe" -G Ninja -S C:\Users\Thoma\dev\FL-Studio-SDK-CMake-Template -B C:\Users\Thoma\dev\FL-Studio-SDK-CMake-Template\cmake-build-release-visual-studio
+CMAKE FL SDK TEMPLATE: IS_EFFECT set to TRUE
+CMAKE FL SDK TEMPLATE: IS_GENERATOR set to FALSE
+CMAKE FL SDK TEMPLATE: will be installed as an effect, in folder C:/Program Files/Image-Line/FL Studio 20/Plugins/Fruity/Effects
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio

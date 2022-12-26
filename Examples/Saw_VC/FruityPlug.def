@@ -1,0 +1,5 @@
+LIBRARY	"Saw_VC"
+;DESCRIPTION  'Saw example plugin'
+
+EXPORTS
+    CreatePlugInstance

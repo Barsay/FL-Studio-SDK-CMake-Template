@@ -1,0 +1,17 @@
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/CMakeFiles/edit_cache.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/CMakeFiles/rebuild_cache.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/CMakeFiles/list_install_components.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/CMakeFiles/install.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/CMakeFiles/install/local.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/SDK/CMakeFiles/fl_sdk.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/SDK/CMakeFiles/edit_cache.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/SDK/CMakeFiles/rebuild_cache.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/SDK/CMakeFiles/list_install_components.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/SDK/CMakeFiles/install.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/SDK/CMakeFiles/install/local.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/Plugin/CMakeFiles/PLUGIN_x64.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/Plugin/CMakeFiles/edit_cache.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/Plugin/CMakeFiles/rebuild_cache.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/Plugin/CMakeFiles/list_install_components.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/Plugin/CMakeFiles/install.dir
+C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/Plugin/CMakeFiles/install/local.dir

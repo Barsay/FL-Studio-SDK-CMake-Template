@@ -1,0 +1,57 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install",
+			"include"
+		],
+		"files" : 
+		[
+			"Plugin/utils/install_rules.cmake",
+			"Plugin/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 46,
+				"parent" : 0
+			},
+			{
+				"file" : 0,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 8,
+				"parent" : 2
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "C:/Program Files/Image-Line/FL Studio 20/Plugins/Fruity/Effects/PLUGIN",
+			"paths" : 
+			[
+				"Plugin/PLUGIN_x64.dll"
+			],
+			"targetId" : "PLUGIN_x64::@093c6b9be130a3fdbf8e",
+			"targetIndex" : 0,
+			"type" : "target"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "Plugin",
+		"source" : "Plugin"
+	}
+}

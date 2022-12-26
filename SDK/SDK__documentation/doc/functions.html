@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Functions</font></b></td>
+  </tr>
+</table>
+<p><b>TranslateMidi</b> (FP_DelphiPlug.pas / FP_CPlug.h)<br>
+  This function is used to translate a value from the range 0..65536 to the range 
+  Min..Max. This is necessary in the ProcessParams function of TFruityPlug when 
+  the flag REC_FromMIDI is specified.<br>
+  <br>
+  <i>Parameters</i> :<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#333333">Value</font> 
+  (int64 / __int64) : The value between 0..65536<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#333333">Min</font> 
+  (int64 / __int64) : The minimum value of the control<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#333333">Max</font> 
+  (int64 / __int64) : The maximum value of the control<br>
+  <br>
+  <i>Result</i> (integer / int) : The new value (between Min and Max, inclusive) 
+  <br>
+  <br>
+  <br>
+  <b>MinOf</b> (FP_Extra .pas/.h)<br>
+  An easy way to retrieve the smallest of two values.<br>
+  <br>
+  <i><font color="#CC0000">Delphi : </font></i><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;function MinOf(a, b: integer): integer;<br>
+  <i><font color="#CC0000">C++ :</font></i><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;int MinOf(int a, int b);<br>
+  <br>
+  <br>
+  <b>MulShift16 </b>(FP_Extra .pas/.h)<br>
+  Multiplies its two parameters and shifts them left by 16 bits.<br>
+  <br>
+  <i><font color="#CC0000">Delphi :</font></i><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;function MulShift16(a,b:Integer):Integer; <br>
+  <font color="#CC0000"><i>C++ :</i></font><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;int MulShift16(int a, int b);</p>
+<p>&nbsp;</p>
+<p><strong>VolumeToVelocity</strong> (FP_Extra .pas/.h)<br>
+  Translates the host's voice volume to a linear MIDI velocity (values between 
+  0 and 1). Simply pass it the InitLevels.Vol field of the VoiceParams record.<br>
+  <br>
+  <font color="#CC0000"><em>Delphi :</em></font><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;function VolumeToVelocity(Volume: single): single;</p>
+<p><em><font color="#CC0000">C++ :</font></em><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;float VolumeToVelocity(float Volume);</p>
+<p>&nbsp;</p>
+<p><strong>VolumeToMIDIVelocity</strong> (FP_Extra .pas/.h)<br>
+  Translates the host's voice volume to a linear MIDI velocity (values between 
+  0 and 127). Simply pass it the InitLevels.Vol field of the VoiceParams record.<br>
+  <br>
+  <font color="#CC0000"><em>Delphi :</em></font><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;function VolumeToMIDIVelocity(Volume: single): single;</p>
+<p><em><font color="#CC0000">C++ :</font></em><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;float VolumeToMIDIVelocity(float Volume);</p>
+</body>
+</html>

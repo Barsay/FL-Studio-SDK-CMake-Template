@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>Guidelines</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="10" border="0">
+  <tr bgcolor="#EEEEFF"> 
+    <td><b><font size="5" color="#000000">Guidelines</font></b></td>
+  </tr>
+</table>
+<p>These are some requirements for 'Fruity approved' plugins. You're free to build 
+  your Fruity plugins whatever way you want, but we will only support such 'system 
+  friendly' plugins.<br>
+  <br>
+  Plugins that don't respect all those rules could be seen as working (or not 
+  crashing so often) plugins, but in no way 'nice' to the system. Keep in mind 
+  that most of the users will see FL Studio crashing instead of the plugin crashing. 
+</p>
+<p><i>A Fruity plugin should:</i></p>
+<p><b>Share most of its resources between each instance of the same plugin</b><br>
+  That is, a plugin shouldn't recreate all its bitmaps or lenghty precalculated 
+  tables each time an instance of it is recreated. Instead it should create all 
+  its resources in its DLL startup code, &amp; let each instance of the plugin 
+  class access the same ressources (if possible). This is important in order to 
+  lower the minimum memory requirement for &amp; its plugins, but also very important 
+  because graphic resources (handles) are <em>very</em> limited under Win9x, &amp; 
+  opening 8 times a plugin that eats 10% graphic resources (&amp; doesn't share 
+  them) would crash the system. FL Studio itself now eats about 10% of the graphic 
+  resources, but used to eat over 30% in its early versions. The trick here is 
+  to prefer DIBs (*not* using CreateDIBSection that eats a handle too) over DDBs, 
+  &amp; to group bitmaps if possible.</p>
+<p><b>Not eat too much CPU for what it does</b><br>
+  A plugin eating 20% of the average CPU is almost useless, unless it's not made 
+  to be used in a complete song. Don't create any threaded timer, FL Studio itself 
+  uses standard Windows timers for its animation, because it's a music app &amp; 
+  the music has a higher priority. Threaded timers are only used for the mixer 
+  &amp; MIDI message delivering. Any timer used to animate something should be 
+  switched off when the interface is hidden.</p>
+<p><b>Install nicely</b><br>
+  In the tools folder, you can find the FPSetup program. You can call this from 
+  your installer program (or unzipper or whatever), with a script file as parameter. 
+  This will then install your plugin in the right place. Look <a href="installation.html">here</a> 
+  for additional information about this. </p>
+<p><b>Not be published in its beta state</b><br>
+  This not to crowd the plugin list with ten versions of the same plugin 
+  (though a second or enhanced version is acceptable). Plugin presets are definitely 
+  *not* compatible between them, so an enhanced version of a plugin won't be 'told' 
+  to load presets from another version, which is considered as another plugin. 
+  A better way to support future enhancements is to store a version # as the first 
+  entry in the plugin saved state. That way, any enhanced version will be the 
+  same plugin (same name, &amp; overwriting its old version), &amp; check the 
+  version stored in its state to 'adapt' old presets to its new version. It's 
+  also nice, though not required, to make the plugin not load a state of a version 
+  it doesn't support.</p>
+<p><b>Have a name that works as a valid directory name</b><br>
+  Plugins will store their 
+  presets inside a subdirectory of the same name, so plugins can't use \ or any 
+  invalid character in their name. Additionally (but it's more a limitation), 
+  the plugin 'long' name (published by the DLL), the plugin DLL name, &amp; its 
+  subdirectory name should be the *same*. Ex: 'BeepMap/BeepMap.dll' publishes 
+  the name 'BeepMap' (but is free to publish anything else as the 'short' name).</p>
+<p><b>Have a unique name</b><br>
+  Please do not name it 'Flanger', or just 'Distortion' of course. We're not using 
+  GUIDs to recognise plugins, so plugin names have to be unique. A good idea is 
+  to put your initials before the name &amp; to check that no plugin already has 
+  the name you chose. Several DX plugins chose to name their plugin 'AUTHOR plugin 
+  function', so that they're easy to store in sub-entries in a menu list. FL Studio 
+  might support that in the future.</p>
+<p><b>Follow all the rules described in the SDK</b><br>
+  The SDK publishes many things not supported yet, so please don't assume your 
+  plugin works by trials/errors. Do not touch things or use flags you don't know 
+  about.</p>
+<p><b>NOT MESS WITH THE CPU STATE</b><br>
+  This is important &amp; is part of the bad reputation &amp; instability of VST 
+  &amp; DX plugs in FL Studio. Plugins shouldn't modify the CPU state (including 
+  the FPU state), or at least restore it as they got it.</p>
+<p><b>Respect the guidelines about when plugin functions are called</b><br>
+  FL Studio can call plugin functions by its main thread, or the mixing thread, 
+  meaning that 2 of your functions could be executing at the same time. For example, 
+  your DLL could be mixing a piece of buffer in another (FL Studio) thread just 
+  when you're updating a parameter (by one of your visual control), so in some 
+  cases a thread synchronisation system has to be used. The FL Studio host class 
+  publishes 2 functions to 'lock' &amp; 'unlock' the mixer thread.<br>
+</p>
+</body>
+</html>

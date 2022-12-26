@@ -1,0 +1,125 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.23"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "SDK",
+					"jsonFile" : "directory-SDK-Release-e8c6ee3007cd1ce740d4.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.23"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "SDK",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "Plugin",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-Plugin-Release-5470360e173d945f2235.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.23"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "Plugin",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "FL_TEMPLATE"
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "fl_sdk",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "PLUGIN",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 2,
+					"id" : "PLUGIN_x64::@093c6b9be130a3fdbf8e",
+					"jsonFile" : "target-PLUGIN_x64-Release-af2fce6b284a8a74de58.json",
+					"name" : "PLUGIN_x64",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "fl_sdk::@844aa9b0a09c37829b2b",
+					"jsonFile" : "target-fl_sdk-Release-2fb6963626277021c277.json",
+					"name" : "fl_sdk",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio",
+		"source" : "C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

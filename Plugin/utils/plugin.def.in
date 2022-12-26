@@ -1,0 +1,8 @@
+; This file Declares the module parameters for the DLL.
+
+LIBRARY      "${PROJECT_NAME}"
+DESCRIPTION  '${PLUGIN_DESCRIPTION}'
+
+EXPORTS
+    CreatePlugInstance
+

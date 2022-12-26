@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>Creating the object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<p><a href="principles.html">First</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href="principles.html">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="voices.html">Next</a> 
+</p>
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Creating&nbsp;the&nbsp;object</font></b></td>
+  </tr>
+</table>
+<p>The first thing FL Studio does when the user selects a plugin, is load the 
+  CreatePlugInstance function. Therefore, this function has to be exported from 
+  the dll. In the examples, this is done in the plugin unit/module. </p>
+<p>Inside CreatePlugInstance, there are two things to be done. First, set the 
+  global PlugHost variable to the Host parameter of the function. After that, 
+  create your plugin and return it as the result of the function. <br>
+  <br>
+  Make sure that the HostTag member of your plugin class is set to the Tag parameter 
+  of CreatePlugInstance. You can do this either inside this function (after your 
+  class has been created), or in the constructor of your class (like in the examples). 
+  Also set the Info field of the plugin class to point to a valid TPlugInfo structure. 
+  If this value is invalid, your plugin will not be loaded.</p>
+</body>
+</html>

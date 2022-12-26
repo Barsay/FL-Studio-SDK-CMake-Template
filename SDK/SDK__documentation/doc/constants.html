@@ -1,0 +1,1514 @@
+<html>
+<head>
+<title>Constants</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="20" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Constants</font></b></td>
+  </tr>
+</table>
+<p>These are the constants used in Fruity plugins. Unless otherwise specified, 
+  they're defined in FP_PlugClass (.pas /.h).</p>
+<table width="100%" border="1" bordercolor="#FFFFFF">
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%"> <div align="left"><b>Name</b></div></td>
+    <td width="9%"> <div align="left"><b>Value</b></div></td>
+    <td width="68%"> <div align="left"><b>Explanation</b></div></td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"> <div align="left"><b>General</b></div></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF"> <div align="left">&nbsp;</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">CurrentSDKVersion</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">The version of the SDK. 
+      </div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">MIDIMsg_PortMask</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">FFFFFF</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(FP_Def)<br>
+      Use this constant to get at rid of the port in a midi message sent by FL 
+      Studio (see the <a href="fruityplug.html">MIDIIn</a> function). If you AND 
+      the message sent by FL Studio with this value, you'll get a genuine MIDI 
+      message (meaning the fourth byte will be zero)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">MIDIMsg_Null</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">FFFFFFFF</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(FP_Def)<br>
+      In MIDIIn, you can kill the midi message sent by FL Studio by setting it 
+      to this value</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">WaveT_Size</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">16384</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(FP_Def)<br>
+      This is the number of samples in the wavetables provided by the host (see 
+      <a href="fruityplughost.html">TFruityPlugHost</a>)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">WaveT_Shift</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">18</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(FP_Def)<br>
+      18 bit shift for full DWORD conversion</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%"> <div align="left"> &nbsp;</div></td>
+    <td width="9%"> <div align="center">&nbsp; &nbsp;</div></td>
+    <td width="68%"> <div align="left">&nbsp; </div></td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"> <div align="left"><b><a name="_pluginflags"></a>Plugin 
+        Flags</b> </div></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp; </div></td>
+    <td width="68%" bordercolor="#FFFFFF"> <div align="left">(shl mean &quot;shift 
+        left&quot;, the &lt;&lt; operator in C/C++)</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPF_Generator</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">The plugin is a generator 
+        (as opposed to an effect). </div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPF_RenderVoice</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 1</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">(not used yet) The generator 
+        plugin will render voices seperately in VoiceRender. When this flag is 
+        specified, the host will call VoiceRender to actually create the sound.</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPF_UseSampler</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 2</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">The generator plugin 
+        will stream into the host sampler (Voice_Render)</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left"><a name="_fpf_usechansample"></a>FPF_GetChanCustomShape</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 3</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">The plugin will use a 
+        sample that the user loads into the plugin's channel.</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPF_GetNoteInput</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 4</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">(not used yet) The plugin 
+        reacts to note events.</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_WantNewTick</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 5</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> The plugin will be notified on each tick 
+      & be able to control params (like a built-in MIDI controller) </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_NoProcess</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 6</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The plugin won't process buffers at all 
+      (FPF_WantTick, or special visual plugins (Fruity NoteBook))</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPF_NoWindow</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 10</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">The plugin's editor window 
+        should be shown inside the channel properties window</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPF_Interfaceless</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 11</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">(not used yet) The plugin 
+        doesn't provide its own interface, but relies on the host to create one</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_TimeWarp</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 13</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(not used yet) The plugin supports timewarps, 
+      that is can be told to change the playing position in a voice (direct from 
+      disk music tracks, ...)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_MidiOut</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 14</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The plugin will send MIDI out messages. 
+      Only plugins specifying this flag will be enabled when rendering to a midi 
+      file.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_DemoVersion</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 15</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The plugin is a demo version. Practically 
+      this means the host won't save its automation</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_CanSend</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 16</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> The plugin has access to the send tracks, 
+      so it can't be dropped into a send track or into the master<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_MsgOut</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 17</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> The plugin will send delayed messages to 
+      itself (will require the internal sync clock to be enabled)<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_HybridCanRelease</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 18</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> The plugin is a hybrid generator &amp; 
+      can release its envelope by itself. If the host's volume envelope is disabled, 
+      then the sound will keep going when the voice is stopped, until the plugin 
+      has finished its own release<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_GetChanSample</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 19</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> This plugin as a generator will use the 
+      sample loaded in its parent channel (see <a href="#_dispatcherid">FPD_ChanSampleChanged</a>)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_WantFitTime</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1 shl 20</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Fit to time selector will appear in channel 
+      settings window (see FPD_SetFitTime)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPF_NewVoiceParams</td>
+    <td bgcolor="#EEEEFF"> <div align="center">1 shl 21</div></td>
+    <td bgcolor="#EEEEFF">This must be used (for new plugins). It tells the host 
+      to use floating point values for Pitch and Pan in TVoiceParams.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPF_IsDelphi</td>
+    <td bgcolor="#EEEEFF"><div align="center">1 shl 22</div></td>
+    <td bgcolor="#EEEEFF"> <font color="#660000" size="-1">(FL 7.0)</font> Tell 
+      the host if EditorHandle is a Delphi-made window, that can receive Delphi 
+      special messages (like CN_KeyDown for popup menus)<br></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPF_CantSmartDisable</td>
+    <td bgcolor="#EEEEFF"><div align="center">1 shl 23</div></td>
+    <td bgcolor="#EEEEFF"><font color="#660000" size="-1">(FL 7.0)</font> Tells 
+      the host that this plugin can't be smart disabled</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%">&nbsp;</td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><b>Predefined Flag 
+      Combinations</b></td>
+    <td width="9%" bordercolor="#FFFFFF">&nbsp;</td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_Type_Effect</td>
+    <td width="9%" bgcolor="#EEEEFF">&nbsp;</td>
+    <td width="68%" bgcolor="#EEEEFF">Use this if you're making an effect (Eff_Render 
+      gets called by the host)<br>
+      This is just zero</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_Type_FullGen</td>
+    <td width="9%" bgcolor="#EEEEFF">&nbsp;</td>
+    <td width="68%" bgcolor="#EEEEFF">Use this to create a standalone generator 
+      (Gen_Render gets called by the host)<br>
+      This is a combination of FPF_Generator and FPF_NoteInput</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_Type_HybridGen</td>
+    <td width="9%" bgcolor="#EEEEFF">&nbsp;</td>
+    <td width="68%" bgcolor="#EEEEFF">Use this to make a hybrid generator (Voice_Render 
+      is called to generate a voice)<br>
+      This is a combination of FPF_Type_FullGen and FPF_UseSampler</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPF_Type_Visual</td>
+    <td width="9%" bgcolor="#EEEEFF">&nbsp;</td>
+    <td width="68%" bgcolor="#EEEEFF">Use this to define a purely visual plugin, 
+      that doesn't process any audio data<br>
+      This is the same as FPF_NoProcess</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%"> <div align="left">&nbsp; </div></td>
+    <td width="9%"> <div align="center">&nbsp; &nbsp;</div></td>
+    <td width="68%"> <div align="left">&nbsp;&nbsp; </div></td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"> <div align="left"><b><a name="_dispatcherid"></a>Plugin 
+        Dispatcher IDs</b></div></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp; </div></td>
+    <td width="68%" bordercolor="#FFFFFF"> <div align="left"><font size="-1"> 
+        (called from the GUI thread unless specified otherwise)</font></div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPD_ShowEditor</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">0</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">If <i>Value</i> is zero, 
+        the editor has to be hidden<br>
+        If <i>Value</i> is not zero, the editor has to be shown. In this case, 
+        <i>Value</i> contains the handle of the parent window</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPD_ProcessMode</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">Change the processing 
+        mode flags. This can be ignored. See <a href="#_processingmodeflags">Processing 
+        Mode Flags</a><br>
+        The new flags are in <i>Value</i></div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPD_Flush</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">The continuity of processing 
+        is broken. This means that the user has jumped ahead or back in the playlist, 
+        for example. When this happens, the plugin needs to clear all buffers 
+        and start like new<br>
+        <font color="#660000">Warning: this can be called from the mixer thread!</font></div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPD_SetBlockSize</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">3</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">This changes the maximum 
+        processing length, expressed in samples.<br>
+        The new length is in <i>Value</i></div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPD_SetSampleRate</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">4</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">This changes the sample 
+        rate. For the time being, this is fixed to 44100Hz. <br>
+        <i>Value</i> holds the new sample rate</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPD_WindowMinMax</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">5</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">This allows the plugin 
+        to define how the editor window should be resized.<br>
+        <i>Index</i> will hold a pointer to a rectangle for the minimum (Left 
+        and Top) and maximum (Right and Bottom) width and height of the window<br>
+        <i>Value</i> holds a pointer to a point structure that defines by how 
+        much the window size should change horizontally and vertically when the 
+        user drags the border</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_KillAVoice</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">6</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(not used yet) The host has noticed that 
+      too much processing power is used and asks the plugin to kill its weakest 
+      voice. The plugin has return 1 if it did anything, 0 otherwise</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_UseVoiceLevels</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">7</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Only full generators have to respond to 
+      this message. It's meant to allow the cutoff and resonance parameters of 
+      a voice to be used for other purposes, if the generator doesn't use them 
+      as cutoff and resonance.<br>
+      - return 0 if the plugin doesn't support the default per-voice level Index 
+      <br>
+      - return 1 if the plugin supports the default per-voice level Index (filter 
+      cutoff (0) or filter resonance (1)) <br>
+      - return 2 if the plugin supports the per-voice level Index, but for another 
+      function (then check FPN_VoiceLevel to provide your own names)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_SetPreset</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">9</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Called when the user selects a preset. <br> 
+      <i>Index</i> tells you which one to set</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_ChanSampleChanged</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">10</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> A sample has been loaded into the parent 
+      channel. This is given to the plugin as a wavetable, in the same format 
+      as the WaveTables member of TFruityPlugin. Also see <a href="#_fpf_usechansample">FPF_GetChanCustomShape</a>.<br> 
+      <i>Value</i> holds a pointer to the new shape</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> FPD_SetEnabled</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">11</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The host has enabled/disabled the plugin.<br> 
+      <i>Value</i> will contain the new state (0 for disabled, 1 for enabled)<br> 
+      <font color="#660000">Warning: this can be called from the mixer thread!</font> 
+    </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_SetPlaying </td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">12</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The host is playing (song pos info is valid 
+      when playing) or stopped (state in Value) </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_SongPosChanged</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">13</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The song position has jumped from one position 
+      to another non-consecutive position</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_SetTimeSig</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">14</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> The time signature has changed.<br> <i>Value</i> 
+      holds a pointer to a TTimeSigInfo structure (PTimeSigInfo) with the new 
+      information</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_CollectFile</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">15</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> This is called to let the plugin tell the 
+      host which files need to be collected or put in zip files. The name of the 
+      file is passed to the host as a pchar/char* in the result of the dispatcher 
+      function. The host keeps calling this until the plugin returns zero. <br> 
+      <i>Index</i> holds the file #, which starts at 0 </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_SetNumSends</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">17</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> This tells the plugin how many send tracks 
+      there are (fixed to 4, but could be set by the user at any time in a future 
+      update)<br> <i>Value</i> holds the number of send tracks<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_LoadFile</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">18</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Called when a file has been dropped onto 
+      the parent channel's button.<br> <i>Value</i> holds filename. It should 
+      be cast to a pchar/char *</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPD_SetFitTime</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">19</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Set fit to time in beats <br> <i>Value</i> 
+      holds the time. This is a single/float value that needs to be typecast from 
+      the integer/int</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPD_SetSamplesPerTick</td>
+    <td bgcolor="#EEEEFF"> <div align="center">20</div></td>
+    <td bgcolor="#EEEEFF">Sets the number of samples in each tick. This value 
+      changes when the tempo, ppq or sample rate have changed.<br> <em>Value</em> 
+      holds the new value. This is a floating point value, so it has to be typecast 
+      to an integer first!<br> <font color="#660000">Warning: this can be called 
+      from the mixer thread!</font> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPD_SetIdleTime</td>
+    <td bgcolor="#EEEEFF"> <div align="center">21</div></td>
+    <td bgcolor="#EEEEFF">Sets the frequency at which Idle is called.<br> <em>Value</em> 
+      holds the new time (milliseconds)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPD_SetFocus</td>
+    <td bgcolor="#EEEEFF"><div align="center">22</div></td>
+    <td bgcolor="#EEEEFF"> <font color="#660000" size="-1">(FL 7.0)</font> The 
+      host has focused/unfocused the editor (focused in Value) (plugin can use 
+      this to steal keyboard focus)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPD_Transport</td>
+    <td bgcolor="#EEEEFF"> <div align="center">23</div></td>
+    <td bgcolor="#EEEEFF"> <font color="#660000" size="-1">(FL 8.0)</font> This 
+      is sent by the host for special transport messages, from a controller. <br> 
+      <em>Index</em> is the type of message (see <a href="#_transporttypes">transport 
+      types</a>)<br> <em>Result</em> should be 1 if handled, 0 otherwise</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPD_MIDIIn</td>
+    <td bgcolor="#EEEEFF"> <div align="center">24</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Live MIDI input preview. 
+      This allows the plugin to steal messages (mostly for transport purposes). 
+      Must return 1 if handled. <br> <em>Value</em> has the packed MIDI message. 
+      Only note on/off for now.<br> <em>Result</em> should be 1 if handled, 0 
+      otherwise</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%"> <div align="left">&nbsp;</div></td>
+    <td width="9%"> <div align="center">&nbsp;</div></td>
+    <td width="68%"> <div align="left">&nbsp;</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"> <div align="left"><b><a name="_getname"></a>GetName</b></div></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF"> <div align="left">&nbsp;</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPN_Param</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">0</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">Retrieve the name of 
+        a parameter.<br>
+        <i>Index</i> specifies which parameter</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPN_ParamValue</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">Retrieve the text representation 
+        of the value of a parameter for use in the event editor.<br>
+        <i>Index</i> specifies which parameter</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPN_Semitone</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">Retrieve the name of 
+        a semitone.<br>
+        <i>Index</i> specifies which semitone<br>
+        <em>Value</em> specifies the color (or MIDI channel)</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">FPN_Patch</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">3</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">(not used yet) Retrieve 
+        the name of a patch.<br>
+        <i>Index</i> specifies which patch. </div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPN_VoiceLevel</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">4</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(optional) Retrieve the name of a per-voice 
+      parameter, specified by Index. Default is filter cutoff (Index=0) & resonance 
+      (Index=1)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPN_VoiceLevelHint</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">5</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Longer description for per-voice parameter 
+      (works like FPN_VoiceLevel)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPN_Preset</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">6</div></td>
+    <td width="68%" bgcolor="#EEEEFF">This is called when the host wants to know 
+      the name of a preset, for plugins that support presets (see FHD_SetNumPresets 
+      below).<br> <i>Index</i> specifies for which preset the name is needed</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPN_OutCtrl</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">7</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> For plugins that output controllers, retrieve 
+      the name of output controller Index </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%"> <div align="left">&nbsp;</div></td>
+    <td width="9%"> <div align="center">&nbsp;</div></td>
+    <td width="68%"> <div align="left">&nbsp;</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"> <div align="left"><a name="_processingmodeflags"></a><b>Processing 
+        Mode Flags</b></div></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF"> <div align="left">&nbsp;</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">PM_Normal</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">0</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left">Realtime rendering</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <div align="left">PM_HQ_Realtime</div></td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <div align="left"> Realtime rendering with 
+        a higher quality</div></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">PM_HQ_NonRealtime</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Non realtime processing (CPU does not matter, 
+      quality does) (normally set when rendering only)<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">PM_IsRendering</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">16</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> FL is rendering to file if this flag is 
+      set<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">PM_IPMask</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">7 shl 8</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> <font color="#660000" size="-1">(changed 
+      in FL 7.0)</font> 3 bits value for interpolation quality <br>
+      (0=none (obsolete), 1=linear, 2=6 point hermite (default), 3=32 points sinc, 
+      4=64 points sinc, 5=128 points sinc, 6=256 points sinc)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%"> <div align="center">&nbsp; </div></td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><b><a name="_processparam"></a>ProcessParam 
+      Flags</b></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">REC_UpdateValue</td>
+    <td width="9%" bgcolor="#EEEEFF" height="22"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF" height="22">Update the value of the parameter</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">REC_GetValue</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Return the value of the parameter as the 
+      result of the function</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">REC_ShowHint</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">4</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Update the hint if there is one</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">REC_UpdateControl</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">16</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Update the parameter control (wheel, slider, 
+      ...)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">REC_FromMIDI</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">32</div></td>
+    <td width="68%" bgcolor="#EEEEFF">A value between 0 and 65536 has to be translated 
+      to the range of the parameter control. <br>
+      Note that you should also return the translated value, even if REC_GetValue 
+      isn't included.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">REC_NoLink</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1024</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(internal) Don't check if wheels are linked</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> REC_InternalCtrl</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2048</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Sent by an internal controller. Internal 
+      controllers should pay attention to these, to avoid Feedback of controller 
+      changes</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">REC_PlugReserved</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">4096</div></td>
+    <td width="68%" bgcolor="#EEEEFF">This flag is free to be used by the plugin 
+      as it wishes</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%">&nbsp;</td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><a name="_eventids"></a><b>Event 
+      IDs</b></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPE_Tempo</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">0</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The tempo has changed.<br> <i>EventValue</i> 
+      holds the tempo, it needs to be typecast to a float/single value<br> <i>Flags</i> 
+      holds the average samples per tick, as a DWORD</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPE_MaxPoly</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The maximum polyphony has changed. This 
+      is only of intrest to standalone generators.<br> <i>EventValue</i> will 
+      hold the new maximum polyphony. A value &lt;= 0 will mean infinite polyphony 
+    </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPE_MIDI_Pan</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The MIDI channel panning has changed.<br> 
+      <i>EventValue</i> holds the new pan (0..127)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPE_MIDI_Vol</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">3</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The MIDI channel volume has changed.<br> 
+      <i>EventValue</i> holds the new volume (0..127)<br> <i>Flags</i> also holds 
+      the new volume, but you first need to typecast it to a floating point value 
+      (single / float). It's in the range 0..1</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPE_MIDI_Pitch</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">4</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The MIDI channel pitch has changed.<br> 
+      <i>EventValue</i> will hold the new value in *cents*. This has to be translated 
+      according to the current pitch bend range.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%"> <div align="center">&nbsp;</div></td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><b>Voice Handles</b></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FVH_Null</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">-1</div></td>
+    <td width="68%" bgcolor="#EEEEFF">A null (unused) handle</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%"> <div align="center">&nbsp;</div></td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><a name="_voiceeventids" id="_voiceeventids"></a><b>TFruityPlug 
+      Voice Event IDs</b></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPV_Retrigger</td>
+    <td bgcolor="#EEEEFF"> <div align="center">0</div></td>
+    <td bgcolor="#EEEEFF">(not used yet) Monophonic mode can retrigger releasing 
+      voices</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#CCCCDD"><b>TFruityPlugHost Voice Event IDs</b></td>
+    <td width="9%">&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPV_GetLength</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Retrieve the note length in ticks. The result 
+      is not reliable.<br> <em>Result</em> will hold the length of the note, or 
+      -1 if it's not defined.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FPV_GetColor</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2 </div></td>
+    <td width="68%" bgcolor="#EEEEFF">Retrieve the color for a note. A note can 
+      currently have up to 16 colors in the pianoroll. This can be mapped to a 
+      MIDI channel.<br> <em>Result</em> will hold the note color (0..15)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPV_GetVelocity</td>
+    <td bgcolor="#EEEEFF"><div align="center">3</div></td>
+    <td bgcolor="#EEEEFF"> <font color="#660000" size="-1">(FL 7.0)</font> Retrieve 
+      note on velocity. This is computed from InitLevels.Vol. This should be called 
+      from TriggerVoice.<br> <em>Result</em> will hold the velocity. Typecast 
+      it as a float (0..1) </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPV_GetRelVelocity</td>
+    <td bgcolor="#EEEEFF"><div align="center">4</div></td>
+    <td bgcolor="#EEEEFF"> <font color="#660000" size="-1">(FL 7.0)</font> Retrieve 
+      release velocity (0..1) in Result. Use this if some release velocity mapping 
+      is involved. This should be called from Voice_Release.<br>
+      Result will hold the velocity. Typecast it as a float (0..1) (to be called 
+      from Voice_Release) ()</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPV_GetRelTime</td>
+    <td bgcolor="#EEEEFF"><div align="center">5</div></td>
+    <td bgcolor="#EEEEFF"><font color="#660000" size="-1">(FL 7.0)</font> Retrieve 
+      release time multiplicator. Use this for direct release multiplicator. This 
+      should be called from Voice_Release.<br>
+      Result will hold the value. Typecast it as a float (0..2) </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FPV_SetLinkVelocity</td>
+    <td bgcolor="#EEEEFF"><div align="center">6</div></td>
+    <td bgcolor="#EEEEFF"><font color="#660000" size="-1">(FL 7.0)</font> Call 
+      this to set if velocity is linked to volume or not. The default is on.<br> 
+      <em>EventValue</em> should hold the switch (0=off, 1=on).</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%"> <div align="center">&nbsp;</div></td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><a name="_voicerenderresults"></a><b>Voice_Render 
+      Function Results</b></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FVR_Ok</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">0</div></td>
+    <td width="68%" bgcolor="#EEEEFF">No problems</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FVR_NoMoreData</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF">There is no more sample data to fill any 
+      more buffers. The voice will be killed by the host</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%"> <div align="center">&nbsp;</div></td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><a name="_hostdispatcherids"></a><b>Host 
+      Dispatcher IDs</b></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_ParamMenu</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">0</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Tells the host that the user has clicked 
+      an item of the control popup menu<br> <i>Index</i> holds the parameter index<br> 
+      <i>Value</i> holds the popup item index (see FHP_EditEvents)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_GetParamMenuFlags</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(OBSOLETE)<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_EditorResized</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Notify the host that the editor has been 
+      resized.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_NoteNamesChanged</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">3</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Notify the host that the note names have 
+      changed (see FPN_SemiTome)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_ActivateMIDI</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">4</div></td>
+    <td width="68%" bgcolor="#EEEEFF">This makes the host enable its MIDI output. 
+      This is useful when a MIDI out plugin is created (a plugin which will send 
+      midi messages to external midi hardware, most likely)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_WantMIDIInput</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">5</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The plugin either wants to be notified about 
+      MIDI messages (for processing or filtering), or wants to stop being notified 
+      about them.<br> <i>Value</i> tells the host whether the plugin want to be 
+      notified or not (1 to be added to the list of plugins that are notified, 
+      0 to be removed from the list)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_WantMIDITick</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">6</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(not used yet) The plugin wants to receive 
+      MIDITick events, allowing MIDI out plugins </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_KillAutomation</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">8</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Ask the host to kill the automation linked 
+      to the plugin. This can for example be used for a demo version of the plugin. 
+      The host will kill all automation information in the range Index..Value. 
+      So to kill the automation for all parameters, you'd call the dispatcher 
+      with Index = 0 and Value = paramcount-1.<br> <i>Index</i> is the first parameter 
+      for which to kill the automation<br> <i>Value</i> is the last parameter 
+      for which to kill the automation (inclusive)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_SetNumPresets</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">9</div></td>
+    <td width="68%" bgcolor="#EEEEFF">This tells the host how many presets are 
+      supported by the plugin (this is mainly used by the wrapper plugin).<br> 
+      <i>Value</i> holds the number of presets</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"><a name="_fhd_setnewname"></a>FHD_SetNewName</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">10</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Sets a new short name for the parent. <br> 
+      <i>Value</i> is the new name, a pointer to a null terminated string (pchar 
+      / char *)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_SelectChanSample</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">12</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Ask the host to open a selector for its 
+      channel sample (Also see <a href="#_fpf_usechansample">FPF_UseChanSample</a>) 
+    </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_WantIdle</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">13</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Tell the host that the plugin wants to 
+      receive the idle message (or not). Idle messages are received by default.<br> 
+      <i>Value</i>=1 for adding the plugin to the idle list, <i>Value</i>=0 for 
+      removing it from the list</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_LocateDataFile</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">14</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Ask the host to search for a file in its 
+      search paths<br> <i>Value</i> should hold the simple filename (pchar / char 
+      *)<br>
+      The full path is returned as result of the function (pchar / char *). This 
+      result doesn't live long so copy it as soon as possible.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> FHD_TicksToTime</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">16</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Translate tick time into Bar:Step:Tick (warning: 
+      it's *not* Bar:Beat:Tick) <br> <i>Value</i> should hold the tick time to 
+      translate<br> <i>Index</i> should contain a pointer to a TSongTime structure 
+      (PSongTime)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF"> <a name="_FHD_AddNoteToPR"></a>FHD_AddNotesToPR</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">17</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Ask the host to add one or more notes to 
+      the piano roll<br> <i>Value</i> should hold a pointer to a <a href="types.html#_TNotesParams">TNotesParams</a> 
+      structure (PNotesParams), describing all the notes to be added</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_GetParamMenuEntry</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">18</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Before the popup menu is shown, you must 
+      fill it with the entries set by the host. You use this dispatcher code to 
+      find out which those are.<br> <i>Index</i> is the parameter index<br> <i>Value</i> 
+      holds the popup item index (starting from 0)<br>
+      The result will be a pointer to a TParamMenuEntry structure, or a null pointer 
+      if there are no more entries to add</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_ShowMsg</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">19</div></td>
+    <td width="68%" bgcolor="#EEEEFF">This will make fruity show a message box.<br> 
+      <i>Index</i> must be set to a pointer to the text to be shown (cast as an 
+      integer). The format for this is Title|Message. For example : &quot;My Message|Hey 
+      look at this!&quot;.<br> <i>Value</i> must hold the flags (MB_OkCancel, 
+      MB_IconWarning, etc.)<br>
+      The function will return the result of the messagebox, IDOk, IDCancel format 
+      (as in TApplication.MessageBox in Delphi)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_NoteOn</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">20</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Turn on a preview note<br> <i>Index </i>should 
+      hold the semitone in the low word, and the color (or MIDI channel) in the 
+      high word<br> <i>Value</i> contains the velocity</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_NoteOff</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">21</div></td>
+    <td width="68%" bgcolor="#EEEEFF">Turn a preview note off<br>
+      Pass the semitone in <i>Index</i></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_OnHint_Direct</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">22</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> This shows a hint message in the FL hint 
+      area. It's the same as OnHint, but shows it immediately (to show a progress 
+      while you're doing something) <br> <i>Value</i> holds a PChar/char * containing 
+      the text to show<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_SetNewColor</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">23</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Use this code to set a new color for the 
+      parent <br> <i>Value</i> holds the color<br>
+      (also see <a href="#_fhd_setnewname">FHD_SetNewName</a>)<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_GetInstance</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">24</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> This returns the module instance of the 
+      host in Windows. This could be an exe or a DLL, so it won't be the process 
+      itself<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_KillIntCtrl</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">25</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Ask the host to kill anything linked to 
+      an internal controller. This is used when undeclaring internal controllers.<br> 
+      <i>Index</i> is the first internal controller to kill<br> <i>Value</i> is 
+      the last internal controller to kill</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHD_SetNumParams</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">27</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Call this to override the number of parameters 
+      that this plugin instance has. This is meant for plugins that have a different 
+      set of parameters per instance.<br> <i>Value</i> holds the new number of 
+      parameters</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FHD_PackDataFile</td>
+    <td bgcolor="#EEEEFF"><div align="center">28</div></td>
+    <td bgcolor="#EEEEFF">Ask the host to create a filename relative to the FL 
+      Studio data folder. This makes it much faster to look for this file (samples, 
+      for example) when the song is loaded again.<br> <em>Value</em> holds the 
+      pointer to the full filename <br> <em>Result</em> will hold a pointer to 
+      the packed filename. Copy it immediately!</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FHD_GetProgPath</td>
+    <td bgcolor="#EEEEFF"><div align="center">29</div></td>
+    <td bgcolor="#EEEEFF">Ask the host where the FL Studio engine dll is. This 
+      may be different from the location of the executable. It can be used to 
+      discover the location of the FL Studio data path.<br> <em>Result</em> will 
+      hold a pointer to the path. Copy it immediately!</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FHD_SetLatency</td>
+    <td bgcolor="#EEEEFF"><div align="center">30</div></td>
+    <td bgcolor="#EEEEFF">Set the plugin latency, if any.<br> <em>Value</em> holds 
+      the latency in samples.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FHD_CallDownloader</td>
+    <td bgcolor="#EEEEFF"><div align="center">31</div></td>
+    <td bgcolor="#EEEEFF"><font color="#660000" size="-1">(FL 6.0)</font> Ask 
+      the host to show the preset downloader/selector for this plugin.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FHD_EditSample</td>
+    <td bgcolor="#EEEEFF"><div align="center">32</div></td>
+    <td bgcolor="#EEEEFF"> <font color="#660000" size="-1">(FL 7.0)</font> Edits 
+      sample in Edison<br> <em>Value</em> holds the sample filename (pchar/char* 
+      typecast to integer)<br> <em>Index</em> should be 1 if an existing instance 
+      of Edison can be re-used</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FHD_SetThreadSafe</td>
+    <td bgcolor="#EEEEFF"><div align="center">33</div></td>
+    <td bgcolor="#EEEEFF"> <font color="#660000" size="-1">(FL 7.0)</font> Call 
+      this to let FL know that this plugin is thread-safe (or not). The default 
+      is not. You should do your own thread-sync using LockMix_Shared<br>
+      <em>Value</em> holds the switch (0=off, 1=on)<br>
+      <strong>Important</strong>: this should only be used from a generator plugin!</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FHD_SmartDisable</td>
+    <td bgcolor="#EEEEFF"><div align="center">34</div></td>
+    <td bgcolor="#EEEEFF"> <font color="#660000" size="-1">(FL 7.0)</font> The 
+      plugin asks FL to enable or disable smart disabling. This is mainly for 
+      generators, so they can get MIDI input (if applicable)<br> <em>Value</em> 
+      holds the switch (0=off, 1=on)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_SetUID</td>
+    <td><div align="center">35</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Sets the unique identifying 
+      string for this plugin. This will be used to save/restore custom data related 
+      to this plugin. Handy for wrapper plugins. <br> <em>Value</em> is the identifying 
+      string (cast to an integer from a pchar/char*)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_GetMixingTime</td>
+    <td><div align="center">36</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Get the mixer time, relative 
+      to the current time.<br> <em> Index</em> is the time format required (0: 
+      Beats, 1: absolute ms, 2: running ms)<br> <em> Value</em> is a pointer to 
+      a <a href="types.html#_TFPTime">TFPTime</a>, which is filled with an optional 
+      offset in samples</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_GetPlaybackTime</td>
+    <td><div align="center">37</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Get playback time. See 
+      FHD_GetMixingTime for details.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_GetSelTime</td>
+    <td><div align="center">38</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Get selection time in 
+      the t and t2 fields of TFPTime. See FHD_GetMixingTime for details.<br> <em>Result</em> 
+      is 0 if there is no selection. t and t2 are then filled with full song length.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_GetTimeMul</td>
+    <td><div align="center">39</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Get the current tempo 
+      multiplicator. This is not part of the song but used for fast-forward.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_Captionize</td>
+    <td><div align="center">40</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Captionize the plugin. 
+      This can be useful when dragging.<br> <em>Value</em> is 1 for captionized 
+      or 0 otherwise</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_SendSysEx</td>
+    <td><div align="center">41</div></td>
+    <td><p><font color="#660000" size="-1">(FL 8.0)</font> Send a SysEx string, 
+        without delay. Do not abuse this!<br>
+        <em>Index</em> is the port to send to<br>
+        <em>Value</em> is a pointer to the data to send. The first 32bit integer 
+        is the length of the string, the rest is the data<br>
+      </p></td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_LoadAudioClip</td>
+    <td><div align="center">42</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Send an audio file to 
+      the playlist as an audio clip, starting at the playlist selection (mainly 
+      for Edison)<br> <em>Value</em> is the filename (pchar/char* cast to integer)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_LoadInChannel</td>
+    <td><div align="center">43</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Send a file to the selected 
+      channel(s) (mainly for Edison)<br> <em>Value</em> is the filename (pchar/char* 
+      cast to integer)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FHD_ShowInBrowser</td>
+    <td><div align="center">44</div></td>
+    <td><font color="#660000" size="-1">(FL 8.0)</font> Locates the specified 
+      file in the browser and jumps to it. This also adds the file's folder to 
+      the browser search paths if necessary.<br> <em>Value</em> is the filename 
+      (pchar/char* cast to integer)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%"> <div align="center">&nbsp;</div></td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><a name="_parampopupindexes"></a><b>Parameter 
+      Popup Menu Item Indexes</b></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center"> &nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;These are the same order as the 
+      parameter menu in FL Studio. It can be a popup menu or anything else. They 
+      are all obsolete now, replaced by FHD_GetParamMenuEntry.</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHP_Edit</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">0</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(OBSOLETE)<br>
+      Edit events</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHP_EditNewWindow</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(OBSOLETE)<br>
+      Edit events in a new window</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHP_Init</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(OBSOLETE)<br>
+      Initialize with this position</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHP_Link</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">3</div></td>
+    <td width="68%" bgcolor="#EEEEFF">(OBSOLETE)<br>
+      Link to a MIDI controller</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%"> <div align="center">&nbsp;</div></td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><a name="_parampopupflags"></a><b>Parameter 
+      Popup Menu Item Flags</b></td>
+    <td width="9%" bordercolor="#FFFFFF"> <div align="center">&nbsp;</div></td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHP_Disabled</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The item is disabled</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHP_Checked</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" bgcolor="#EEEEFF">The item is checked</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%">&nbsp;</td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><b>Sample Loading 
+      Flags</b></td>
+    <td width="9%" bordercolor="#FFFFFF">&nbsp;</td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHLS_ShowDialog</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> This tells the sample loader to show an 
+      open box, for the user to select a sample </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" height="43" bgcolor="#EEEEFF">FHLS_ForceReload</td>
+    <td width="9%" height="43" bgcolor="#EEEEFF"> <div align="center">2</div></td>
+    <td width="68%" height="43" bgcolor="#EEEEFF"> Force the sample to be reloaded, 
+      even if the filename is the same. This is handy in case you modified the 
+      sample, for example</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">FHLS_GetName</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">4</div></td>
+    <td width="68%" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> Don't load the sample, 
+      instead get its filename &amp; make sure that the format is correct (useful 
+      after FPD_ChanSampleChanged)<br> </td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">FHLS_NoResampling</td>
+    <td bgcolor="#EEEEFF"><div align="center">5</div></td>
+    <td bordercolor="#FFFFFF" bgcolor="#EEEEFF">Don't resample to the host sample 
+      rate</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%">&nbsp;</td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#CCCCCC"> 
+    <td width="23%" bgcolor="#CCCCDD" bordercolor="#FFFFFF"><b><a name="TNotesParamsFlags"></a>TNotesParams 
+      Flags</b></td>
+    <td width="9%" bordercolor="#FFFFFF">&nbsp;</td>
+    <td width="68%" bordercolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%" bgcolor="#EEEEFF">NPF_EmptyFirst</td>
+    <td width="9%" bgcolor="#EEEEFF"> <div align="center">1</div></td>
+    <td width="68%" bgcolor="#EEEEFF"> Delete everything currently on the piano 
+      roll before adding the notes (See also : <a href="#_FHD_AddNoteToPR">FHD_AddNotesToPR</a>)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#EEEEFF">NPF_UseSelection</td>
+    <td bgcolor="#EEEEFF"><div align="center">2</div></td>
+    <td bgcolor="#EEEEFF">Put the new notes in the piano roll selection, if there 
+      is one</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td bgcolor="#CCCCDD"><strong><a name="_transporttypes"></a>Transport types 
+      </strong>(GenericTransport .pas/.h)</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Jog</td>
+    <td bgcolor="#EEEEFF"><div align="center">0</div></td>
+    <td> (jog) generic jog (can be used to select stuff)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Jog2</td>
+    <td bgcolor="#EEEEFF"><div align="center">1</div></td>
+    <td> (jog) alternate generic jog (can be used to relocate stuff)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Strip</td>
+    <td bgcolor="#EEEEFF"><div align="center">2</div></td>
+    <td> touch-sensitive jog strip, value will be in -65536..65536 for leftmost..rightmost</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_StripJog</td>
+    <td bgcolor="#EEEEFF"><div align="center">3</div></td>
+    <td> (jog) touch-sensitive jog in jog mode</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_StripHold</td>
+    <td bgcolor="#EEEEFF"><div align="center">4</div></td>
+    <td> value will be 0 for release, 1,2 for 1,2 fingers centered mode, -1,-2 
+      for 1,2 fingers jog mode (will then send FPT_StripJog)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Previous</td>
+    <td bgcolor="#EEEEFF"><div align="center">5</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Next</td>
+    <td bgcolor="#EEEEFF"><div align="center">6</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_PreviousNext</td>
+    <td bgcolor="#EEEEFF"><div align="center">7</div></td>
+    <td> (jog) generic track selection</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_MoveJog</td>
+    <td bgcolor="#EEEEFF"><div align="center">8</div></td>
+    <td> (jog) used to relocate items</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Play</td>
+    <td bgcolor="#EEEEFF"><div align="center">10</div></td>
+    <td> (button) play/pause</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Stop</td>
+    <td bgcolor="#EEEEFF"><div align="center">11</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Record</td>
+    <td bgcolor="#EEEEFF"><div align="center">12</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Rewind</td>
+    <td bgcolor="#EEEEFF"><div align="center">13</div></td>
+    <td> (hold)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_FastForward</td>
+    <td bgcolor="#EEEEFF"><div align="center">14</div></td>
+    <td> (hold)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Loop</td>
+    <td bgcolor="#EEEEFF"><div align="center">15</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Mute</td>
+    <td bgcolor="#EEEEFF"><div align="center">16</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Mode</td>
+    <td bgcolor="#EEEEFF"><div align="center">17</div></td>
+    <td> (button) generic or record mode</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Undo</td>
+    <td bgcolor="#EEEEFF"><div align="center">20</div></td>
+    <td> (button) undo/redo last, or undo down in history</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_UndoUp</td>
+    <td bgcolor="#EEEEFF"><div align="center">21</div></td>
+    <td> (button) undo up in history (no need to implement if no undo history)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_UndoJog</td>
+    <td bgcolor="#EEEEFF"><div align="center">22</div></td>
+    <td> (jog) undo in history (no need to implement if no undo history)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Punch </td>
+    <td bgcolor="#EEEEFF"><div align="center">30</div></td>
+    <td> (hold) live selection</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_PunchIn</td>
+    <td bgcolor="#EEEEFF"><div align="center">31</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_PunchOut</td>
+    <td bgcolor="#EEEEFF"><div align="center">32</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_AddMarker</td>
+    <td bgcolor="#EEEEFF"><div align="center">33</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_AddAltMarker</td>
+    <td bgcolor="#EEEEFF"><div align="center">34</div></td>
+    <td> (button) add alternate marker</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_MarkerJumpJog</td>
+    <td bgcolor="#EEEEFF"><div align="center">35</div></td>
+    <td> (jog) marker jump</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_MarkerSelJog</td>
+    <td bgcolor="#EEEEFF"><div align="center">36</div></td>
+    <td> (jog) marker selection</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Up</td>
+    <td bgcolor="#EEEEFF"><div align="center">40</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Down</td>
+    <td bgcolor="#EEEEFF"><div align="center">41</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Left</td>
+    <td bgcolor="#EEEEFF"><div align="center">42</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Right</td>
+    <td bgcolor="#EEEEFF"><div align="center">43</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_HZoomJog</td>
+    <td bgcolor="#EEEEFF"><div align="center">44</div></td>
+    <td> (jog)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_VZoomJog</td>
+    <td bgcolor="#EEEEFF"><div align="center">45</div></td>
+    <td> (jog)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Snap</td>
+    <td bgcolor="#EEEEFF"><div align="center">48</div></td>
+    <td> (button) snap on/off</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_SnapMode</td>
+    <td bgcolor="#EEEEFF"><div align="center">49</div></td>
+    <td> (jog) snap mode</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Cut</td>
+    <td bgcolor="#EEEEFF"><div align="center">50</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Copy</td>
+    <td bgcolor="#EEEEFF"><div align="center">51</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Paste</td>
+    <td bgcolor="#EEEEFF"><div align="center">52</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Insert</td>
+    <td bgcolor="#EEEEFF"><div align="center">53</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Delete</td>
+    <td bgcolor="#EEEEFF"><div align="center">54</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_NextWindow</td>
+    <td bgcolor="#EEEEFF"><div align="center">58</div></td>
+    <td> (button) TAB</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_WindowJog</td>
+    <td bgcolor="#EEEEFF"><div align="center">59</div></td>
+    <td> (jog) window selection</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F1</td>
+    <td bgcolor="#EEEEFF"><div align="center">60</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F2</td>
+    <td bgcolor="#EEEEFF"><div align="center">61</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F3 </td>
+    <td bgcolor="#EEEEFF"><div align="center">62</div></td>
+    <td>( button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F4</td>
+    <td bgcolor="#EEEEFF"><div align="center">63</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F5</td>
+    <td bgcolor="#EEEEFF"><div align="center">64</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F6</td>
+    <td bgcolor="#EEEEFF"><div align="center">65</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F7</td>
+    <td bgcolor="#EEEEFF"><div align="center">66</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F8</td>
+    <td bgcolor="#EEEEFF"><div align="center">67</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F9</td>
+    <td bgcolor="#EEEEFF"><div align="center">68</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_F10</td>
+    <td bgcolor="#EEEEFF"><div align="center">69</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Enter</td>
+    <td bgcolor="#EEEEFF"><div align="center">80</div></td>
+    <td> (button) enter/accept</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Escape</td>
+    <td bgcolor="#EEEEFF"><div align="center">81</div></td>
+    <td> (button) escape/cancel</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Yes</td>
+    <td bgcolor="#EEEEFF"><div align="center">82</div></td>
+    <td> (button) yes</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_No</td>
+    <td bgcolor="#EEEEFF"><div align="center">83</div></td>
+    <td> (button) no</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Menu</td>
+    <td bgcolor="#EEEEFF"><div align="center">90</div></td>
+    <td> (button) generic menu</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_ItemMenu</td>
+    <td bgcolor="#EEEEFF"><div align="center">91</div></td>
+    <td> (button) item edit/tool/contextual menu</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_Save</td>
+    <td bgcolor="#EEEEFF"><div align="center">92</div></td>
+    <td> (button)</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF" bgcolor="#EEEEFF"> 
+    <td>FPT_SaveNew</td>
+    <td bgcolor="#EEEEFF"><div align="center">93</div></td>
+    <td> (button) save as new version</td>
+  </tr>
+  <tr valign="top" bordercolor="#FFFFFF"> 
+    <td width="23%">&nbsp;</td>
+    <td width="9%">&nbsp;</td>
+    <td width="68%">&nbsp;</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

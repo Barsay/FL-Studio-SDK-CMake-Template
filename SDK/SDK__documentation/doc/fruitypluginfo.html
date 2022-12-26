@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>TFruityPlugInfo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="20" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">TFruityPlugInfo</font></b></td>
+  </tr>
+</table>
+<p>This structure holds some information about the plugin that is used by the 
+  host. It is the same for all instances of the same plugin.<br>
+  PFruityPlugInfo is a pointer to TFruityPlugInfo.<br>
+  <br>
+  <b>Fields</b> </p>
+<table width="100%" border="0">
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">SDKVersion</td>
+    <td width="83%">This has to be the version of the SDK used to create the plugin. 
+      This value is available in the constant CurrentSDKVersion</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">LongName</td>
+    <td width="83%">The name of the plugin dll, without the extension (.dll) </td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">ShortName</td>
+    <td width="83%">Short plugin name, to be used in labels to tell the user which 
+      plugin he is working with.</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">Flags</td>
+    <td width="83%">These are some flags that tell the host something about how 
+      the plugin behaves (see <a href="constants.html#_pluginflags">Plugin flags</a>). 
+      This value is a bitfield (see <a href="bitfields.html">Working with bitfields</a>), 
+      so it can be any combination of the plugin flags.</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">NumParams</td>
+    <td width="83%">The number of parameters for this plugin</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">DefPoly</td>
+    <td width="83%"> Preferred (default) maximum polyphony (FL Studio manages 
+      the polyphony) </td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top">
+    <td width="17%">NumOutCtrls</td>
+    <td width="83%">The number of controllers this plugin can control</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">Reserved[]</td>
+    <td width="83%">This is a field that makes it possible to add more fields 
+      in a future version of the sdk. It should be initialized to zero.</td>
+  </tr>
+</table>
+<p><b>Declaration</b> in FP_Class (.pas /.h)</p>
+<p><font color="CC0000"><i>Delphi</i></font> <br>
+  TFruityPlugInfo = record <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;SDKVersion : Integer; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;LongName : PChar;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;ShortName : PChar; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;Flags : Integer; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;NumParams : Integer; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;DefPoly : Integer; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;NumOutCtrls : Integer;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;Reserved :Array[1..31] of Integer; <br>
+  end;<br>
+  PFruityPlugInfo = ^TFruityPlugInfo;<br>
+  <br>
+  <i><font color="CC0000">C++</font></i> <br>
+  typedef struct { <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;int SDKVersion; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;char *LongName; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;char *ShortName; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;int Flags; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;int NumParams; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;int DefPoly; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;int NumOutCtrls;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;int Reserved[31];<br>
+  } TFruityPlugInfo; <br>
+  typedef TFruityPlugInfo *PFruityPlugInfo; </p>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<html>
+<head>
+<title>TFruityPlug</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="20" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><font size="5"><b>TFruityPlug</b></font></td>
+  </tr>
+</table>
+<p><b>Declared in :</b> FP_PlugClass (.pas / .h)</p>
+<p>TFruityPlug is the plugin. It has some methods and members that are used by 
+  the host to do some stuff, such as rendering a voice, retrieving parameter names 
+  etc.<br>
+  In the following tables, datatypes are represented as follows : (Delphi datatype 
+  / C++ datatype).</p>
+<table width="95%" border="1" align="center" cellpadding="2" bordercolor="#FFFFFF">
+  <tr>
+    <td bordercolor="#333333"> <div align="center"><font color="#660000" size="-1">Symbol 
+        explanation</font><font size="-1"><br>
+        (G) called from GUI thread<br>
+        (M) called from mixer thread<br>
+        (GM) both GUI and mixer thread<br>
+        (S) called from MIDI synchronization thread<br>
+        <br>
+        (GM) calls are normally thread-safe </font></div></td>
+  </tr>
+</table>
+<p><a href="#_methods">Methods</a><br>
+  <a href="#_members">Members</a> </p>
+<p><b><a name="_methods"></a>Methods</b> </p>
+<table width="100%" border="0">
+  <tr bgcolor="ddddee" valign="top"> 
+    <td bgcolor="ddddee" width="17%">DestroyObject<br>
+      <font size="-1">(G)</font> </td>
+    <td>This gets called when the host wants to destroy the plugin. You can override 
+      it to clean up at that time.<br>
+      <i>Parameters</i> : none<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Dispatcher<br>
+      <font size="-1">(GM)</font></td>
+    <td bgcolor="#CCCCDD">The host calls this function to request something that 
+      isn't done in a specialized function. <br>
+      <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ID</b> (integer / int) 
+      : the identifier of what the host wants to do (see <a href="constants.html#_dispatcherid">Dispatcher 
+      IDs</a>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Index</b> (integer / 
+      int) <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Value</b> (integer / 
+      int) <br>
+      <i>Result</i> (integer / int)</td>
+  </tr>
+  <tr bgcolor="ddddee" valign="top"> 
+    <td bgcolor="ddddee" width="17%">Idle<br>
+      <font size="-1">(G)</font> </td>
+    <td>This gets called by the host when the user isn't doing anything.<br>
+      <i>Parameters</i> : none<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">SaveRestoreState<br>
+      <font size="-1">(G)</font> </td>
+    <td>Called to save or restore the state of the plugin. What the state of the 
+      plugin is, is up to the plugin developer. <br>
+      <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Stream</b> (IStream / 
+      IStream *) : The memory object that is used to save or restore the state<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Save</b> (longbool / 
+      BOOL) : If true, the plugin needs to save its state to the stream. If false, 
+      the plugin can load its state from the stream.<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="ddddee" valign="top"> 
+    <td bgcolor="ddddee" width="17%">GetName<br>
+      <font size="-1">(GM)</font> </td>
+    <td>This is called when the host wants to know a text representation of some 
+      value.<br>
+      <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Section</b> (integer 
+      / int) : See <a href="constants.html#_getname">GetName constants</a><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Index</b> (integer / 
+      int) : the index of the parameter<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Value</b> (integer / 
+      int)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Name</b> (pchar / char 
+      *) : A pointer to the string that will receive the text representation<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">MIDIIn<br>
+      <font size="-1">(GM)</font> </td>
+    <td>The host will call this when there's new MIDI data available. This function 
+      is only called when the plugin has called the Dispatcher of PlugHost with 
+      the id FHD_WantMIDIInput and value 1.<br>
+      <i>Parameters :</i><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Msg</b> (var integer 
+      / int &amp;) : This is the midi message, encoded into one integer. So from 
+      the least significant byte to the most significant byte, the Status, Data 
+      byte 1, Data byte 2 and Port values are present. Msg can be typecast into 
+      a <a href="types.html#_midioutmsg">TMIDIOutMsg</a> to make it easier to 
+      work with. To remove the port value from MSG, you can AND Msg with the <a href="constants.html">MIDIMsg_PortMask</a> 
+      constant (also see <a href="bitfields.html">Working with bitfields</a>). 
+      If you want to kill the midi message (so it won't be sent any further), 
+      set it to <a href="constants.html">MIDI_MsgNull</a>.<br>
+      <i>Result :</i> none</td>
+  </tr>
+  <tr bgcolor="ddddee" valign="top"> 
+    <td bgcolor="ddddee" width="17%">MIDITick<br>
+      <font size="-1">(S)</font> </td>
+    <td bgcolor="#DDDDEE">This is called before a new midi tick is played (not 
+      mixed), if the plugin specified FPF_WantMidiTick in its flags<br>
+      <i>Parameters :</i> none<br>
+      <i>Result :</i> none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top">
+    <td width="17%">MsgIn<br>
+      <font size="-1">(S)</font></td>
+    <td bgcolor="#CCCCDD">This gets called with a new buffered message to the 
+      plugin itself.<br>
+      <i>Parameters:</i> <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Msg</b> (integer / int) 
+      : <br>
+      <i>Result:</i> none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td bgcolor="#DDDDEE" width="17%">NewTick<br>
+      <font size="-1">(M)</font> </td>
+    <td bgcolor="#DDDDEE">Gets called before a new tick is mixed (not played), 
+      if the plugin specified FPF_WantNewTick in its info structure<br>
+      <i>Parameters</i> : none<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">ProcessEvent<br>
+      <font size="-1">(GM)</font> </td>
+    <td>Process an event sent by the host<br>
+      <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>EventID</b> (integer 
+      / int) : The kind of event to be processed (See the <a href="constants.html#_eventids">Event 
+      ID constants</a>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>EventValue</b> (integer 
+      / int) <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Flags</b> (integer / 
+      int) <i></i> <br>
+      <i>Result</i> (integer / int)</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td bgcolor="#DDDDEE" width="17%">ProcessParam<br>
+      <font size="-1">(GM)</font> </td>
+    <td bgcolor="#DDDDEE">Something has to be done concerning a parameter. What 
+      exactly has to be done is explained by the RECFlags parameter.<br>
+      <i>Parameters</i> : <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Index</b> (integer / 
+      int) : The index of the parameter<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Value</b> (integer / 
+      int) : The (new) value of the parameter<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>RECFlags</b> (integer 
+      / int) : Describes what needs to be done to the parameter. It can be a combination 
+      of several flags (see <a href="constants.html#_processparam">ProcessParam 
+      flags</a>)<br>
+      <i>Result</i> (integer / int) : If REC_GetValue is specified in RECFlags, 
+      the result has to be the value of the parameter</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Eff_Render<br>
+      <font size="-1">(M)</font> </td>
+    <td>Called by the host to apply an effect to some audio data if the plugin 
+      is an effect (FPF_Generator was not specified). The buffers hold the data 
+      in interlaced format : left sample 1, then right sample 1, left sample 2, 
+      right sample 2, and so on<br>
+      <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SourceBuffer</b> (PWAV32FS) 
+      : The buffer that contains the audio data provided by the host<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DestBuffer</b> (PWAV32FS) 
+      : The buffer that the plugin places the data in when the effect has been 
+      applied to it<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Length</b> (integer / 
+      int) : The number of samples in the buffers<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">Gen_Render<br>
+      <font size="-1">(M)</font> </td>
+    <td>Called by the host to generate a voice for a full generator (FPF_UseSampler 
+      was not specified). The buffer hold the data in interlaced format : left 
+      sample 1, then right sample 1, left sample 2, right sample 2, and so on<br>
+      <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DestBuffer</b> (PWAV32FS) 
+      : The buffer that the plugin places the generated audio data in<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Length</b> (var integer 
+      / int &amp;) : The number of samples in the buffers. If the generator creates 
+      less samples than this, it needs to set Length to the amount of samples 
+      it actually created.<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">TriggerVoice<br>
+      <font size="-1">(GM)</font> </td>
+    <td>The host calls this to let the host create a voice.<br>
+      <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>VoiceParams</b> (PVoiceParams) 
+      : A pointer tot the parameters of this voice (see <a href="levelparams.html#_voiceparams">TVoiceParams</a>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SetTag</b> (integer / 
+      int) : An identifier the host uses to identify the voice<br>
+      <i>Result</i> (TVoiceHandle) : The function has to return a handle for the 
+      voice it has just created. This has to be unique to the plugin. It could 
+      be a pointer to a structure that the plugin uses to work with the voice, 
+      for example</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">Voice_Release<br>
+      <font size="-1">(GM)</font> </td>
+    <td bgcolor="#DDDDEE">This gets called by the host when the voice enters the 
+      envelope release state (note off)<br>
+      <i>Parameters</i> : <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Handle</b> (TVoiceHandle) 
+      : The voice handle<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Voice_Kill<br>
+      <font size="-1">(GM)</font></td>
+    <td>Called when the voice has to be discarded. The plugin had to release any 
+      memory associated with the voice<br>
+      <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Handle</b> (TVoiceHandle) 
+      : The voice handle<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">Voice_ProcessEvent<br>
+      <font size="-1">(GM)</font></td>
+    <td> 
+      <p>Process a voice event (not used yet)<br>
+        <i>Parameters</i> :<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Handle</b> (TVoiceHandle) 
+        : The voice handle<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>EventID</b> (integer 
+        / int) : The type of voice event (See the <a href="constants.html#_voiceeventids">Voice 
+        Event ID constants</a>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>EventValue</b> (integer 
+        / int) <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Flags</b> (integer 
+        / int) <br>
+        <i>Result</i> (integer / int)</p>
+    </td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Voice_Render<br>
+      <font size="-1">(GM)</font> </td>
+    <td>Render a voice (only called when FPF_UseSampler was specified in the info 
+      structure) <br>
+      <i>Parameters</i> : <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Handle</b> (TVoiceHandle) 
+      : The voice handle<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DestBuffer</b> (PWAV32FS) 
+      : The buffer that the plugin has to put the generated voice data into<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Length</b> (var integer 
+      / int &amp;) : The number of samples in the buffer. If the generator creates 
+      less samples than this, it needs to set Length to the amount of samples 
+      it actually created.<br>
+      <i>Result</i> (integer / int) : see <a href="constants.html#_voicerenderresults">Voice_Render 
+      Function Results</a></td>
+  </tr>
+</table>
+<p><b><a name="_members"></a>Members</b><br>
+</p>
+<table width="100%" border="0">
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td bgcolor="DDDDEE" width="17%">HostTag</td>
+    <td>(integer / int) Free for the host to use (parent object reference, ...). 
+      The plugin has to assign the parameter Tag from CreatePlugInstance to it 
+      in the constructor of the plugin. When calling host functions (in TFruityPlugHost), 
+      this value has to be passed on as &quot;Sender&quot;</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Info</td>
+    <td>(PFruityPlugInfo) This has to be set so it points to a valid TFruityPlugInfo 
+      structure. This needs to be done before CreatePlugInstance returns, so probably 
+      in the constructor of the plugin class.</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td bgcolor="DDDDEE" width="17%">EditorHandle</td>
+    <td>(HWND) You can set this to the handle of your editor window</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">MonoRender</td>
+    <td>(not used yet) (LongBool / BOOL) Last rendered voice rendered mono data</td>
+  </tr>
+</table>
+<p><br>
+</p>
+</body>
+</html>

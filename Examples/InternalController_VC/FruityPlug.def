@@ -1,0 +1,7 @@
+; FruityPlug.def : Declares the module parameters for the DLL.
+
+LIBRARY      "InternalController_VC"
+DESCRIPTION  'FruityPlug Windows Dynamic Link Library'
+
+EXPORTS
+	CreatePlugInstance

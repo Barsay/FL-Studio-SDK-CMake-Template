@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>General</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="43" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">General</font></b></td>
+  </tr>
+</table>
+<p>The FL Plugin sdk helps you to make plugins for FL Studio. For more information 
+  about FL Studio, visit the website (<a href="http://www.fruityloops.com" target="_blank">www.flstudio.com</a>). 
+  <br>
+  Updates to and new versions of this sdk will be made available through the Developer's 
+  Arena (see the <a href="contact.html">Contact</a> page).</p>
+<p>Note that this sdk is not meant to make hosts for FL plugins. We prefer to 
+  maintain complete freedom to change anything about the sdk we want at any time, 
+  and this is a lot more difficult if there are 3rd party hosts that would be 
+  broken by those changes.</p>
+<p><b>Little intro</b><br>
+  As FL Studio is created using Delphi, it's not always easy to support the latest 
+  and greatest of everything right away. New programming interfaces usually come 
+  only with C/C++ documentation and samples (like Windows itself, for example). 
+  It takes time and some experimentation to translate the necessary headers and 
+  source code from C/C++, and even then it doesn't always necessarily works completely 
+  as it should. There are some nice features in C++ (macros) that can't easily 
+  be translated to Delphi. So while features that add something to FL Studio 
+  will be included at some time, it may take a while.<br>
+  <br>
+  This sdk includes Delphi files and examples, as well as files and examples for 
+  C++ compilers. The C++ sources have been tested in Visual C++ (Visual Studio 
+  2005).</p>
+<p><b>Types of plugins</b><br>
+  There are two kinds of Fruity plugins: effects and generators. Effects are plugins 
+  that receive some audio data from FL Studio and do something to it (apply an 
+  effect). Generators on the other hand create sounds that they send to FL Studio. 
+  Generators are seen as channels by the user (like the SimSynth and Sytrus). 
+  The main reason to make something a generator is that it needs input from the 
+  FL Studio pianoroll (although there are other reasons possible).</p>
+<p><b>Installation</b><br>
+  Plugins are installed in FL Studio in subfolders of the FL Studio\Plugins\Fruity 
+  folder. Effects go in the Effects subfolder, generators are installed in the 
+  Generators subfolder (you're advised to use FPSetup to install your Fruity plugins). 
+  Each plugin has its own folder.</p>
+<p><b>Contents of the sdk</b><br>
+  The sdk contains various things.<br>
+  <br>
+  First of all, of course, there are the files required to create plugins. These 
+  can be found in the <font color="#660000">Source</font> folder. The C folder 
+  contains files for C++ compilers and examples for C++Builder and Visual C++. 
+  The Delphi folder contains files and examples for Delphi. <br>
+  <br>
+  The example plugins are also provided in compiled form, so you can try them 
+  out without compiling them. The compiled dlls are contained in the <font color="#660000">Bin</font> 
+  folder. To install these into FL Studio, run the install.bat file.<br>
+  You'll also find the FPSetup installer program here. How this works is explained 
+  in detail <a href="installation.html">over here</a>. There's also a helper plugin 
+  called FruityMonitor. This is also installed by running the install.bat file 
+  from the Tools folder. It's an effect plugin that shows you what happens when 
+  things happen to the plugin (for example, when SaveRestoreState gets called).<br>
+  <br>
+  The <font color="#660000">Doc</font> folder contains this documentation. <br>
+  <br>
+  Note that this version of the sdk is meant for FL Studio 8 and newer. Not all 
+  features will work in all versions of FL Studio.</p>
+</body>
+</html>

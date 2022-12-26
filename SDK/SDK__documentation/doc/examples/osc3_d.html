@@ -1,0 +1,667 @@
+<html>
+<head>
+<title>Osc3 (Delphi)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<a name="_top"></a> 
+<p><a href="fruitygain_d.html">FruityGain (Delphi)</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="fruitygain_c.html">FruityGain 
+  (C++)</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Osc3 (Delphi)</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="osc3_c.html">Osc3 
+  (C++)</a> <b></b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="sine_d.html">Sine 
+  (Delphi)</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="sine_c.html">Sine 
+  (C++)</a>&nbsp;</p>
+<table width="10" border="0" bgcolor="EEEEFF">
+  <tr>
+    <td><b><font size="5">Osc3&nbsp;(Delphi)</font></b></td>
+  </tr>
+</table>
+<p><a href="#_testplug">TestPlug.pas</a><br>
+  <a href="#_synthform">SynthForm.pas</a><br>
+  <a href="#_synthres">SynthRes.pas</a> </p>
+<p>This page contains a walkthrough of the code of the Osc3 example. It doesn't 
+  include an explanation of the things that are the same as in the FruityGain 
+  example, so you might first want to read that.</p>
+<p>&nbsp;</p>
+<p><a name="_testplug"></a><b>TestPlug.pas</b><br>
+  This unit contains the plugin class. </p>
+<p>We start at the top. We include the sdk units (FP_DelphiPlug, FP_PlugClass 
+  and FP_Def) and ActiveX for IStream (in SaveRestoreState). Then we have some 
+  constants that describe the parameters. There are three oscillators in this 
+  generator plugin, so we have parameters for all of them. Oscillator 1 doesn't 
+  have a level parameter.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">unit TestPlug; 
+
+interface 
+
+uses Windows, Forms, SysUtils, Classes, Controls, 
+     FP_DelphiPlug, ActiveX, FP_PlugClass, FP_Def, ComCtrls; 
+
+const 
+     <font color="#9999FF">// params</font> 
+     NumParamsConst = 3*4-1; 
+
+     pOsc1Level  = -1; 
+     pOsc1Shape  =  0; 
+     pOsc1Coarse =  1; 
+     pOsc1Fine   =  2; 
+     pOsc2Level  =  3; 
+     pOsc3Level  =  7; 
+
+     StateSize = NumParamsConst * 4; 
+
+     <font color="#9999FF">// params + switches </font>
+     nOsc = 3; 
+
+var 
+   PlugInfo: TFruityPlugInfo = ( 
+     SDKVersion : CurrentSDKVersion; 
+     LongName : 'osc3_d'; 
+     ShortName : 'FOsc3_d'; 
+     Flags : FPF_Type_FullGen; 
+     NumParams : NumParamsConst; 
+     DefPoly : 0 <font color="#9999FF">// infinite </font>
+   );</font></pre>
+    </td>
+  </tr>
+</table>
+<p> Then we also define the PlugInfo variable. It's mostly like the one in FruityGain. 
+  Note that we're using FPF_Type_FullGen for Flags, to specify that we're creating 
+  a generator that handles rendering through Gen_Render. If we wanted FL Studio 
+  to call Voice_Render, we'd have to specify FPF_Type_HybridGen.</p>
+<p>Now we define a type for the parameters of an oscillator. There's a waveform 
+  table (ShapeP), a pitch and a level.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">type 
+    TOsc = record 
+      ShapeP : PWaveT; 
+      Pitch  : integer;        
+      Level  : single; 
+    end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>So we arrive at the plugin class declaration. It's derived from TDelphiFruityPlug. 
+  We have two arrays. ParamValue holds the values for all 11 parameters (osc1 
+  shape through osc3 fine). Osc holds the TOsc records for all three oscillators.</p>
+<p>VoiceList is a list meant to store our own information about the voices that 
+  are created. We'll get back to this later when we discuss the TriggerVoice and 
+  Voice_Kill functions.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">type
+    TTestPlug = class(TDelphiFruityPlug) 
+    public 
+      ParamValue : array[0..NumParamsConst-1] of integer; 
+      Osc        : array[0..nOsc-1] of TOsc;        
+      VoiceList  : TList; 
+      
+      procedure DestroyObject; override; 
+      function Dispatcher(ID, Index, Value: integer): integer; override; 
+      procedure SaveRestoreState(const Stream: IStream; Save: LongBool); override; 
+      procedure GetName(Section, Index, Value: integer; Name: pchar); override;
+
+      function ProcessParam(ThisIndex, ThisValue, RECFlags: integer): integer; override;
+
+      procedure Gen_Render(DestBuffer: PWAV32FS; var Length: integer); override;
+      <font color="#9999FF">// voice procedures</font>
+      function TriggerVoice(VoiceParams: PVoiceParams; SetTag: integer): TVoiceHandle; override; 
+      procedure Voice_Release(Handle: TVoiceHandle); override; 
+      procedure Voice_Kill(Handle: TVoiceHandle); override; 
+      function Voice_ProcessEvent(Handle: TVoiceHandle; EventID, EventValue, Flags: integer): integer; override; 
+
+      <font color="#9999FF">// internal procedure</font> 
+      KillAllVoices; 
+      constructor Create(SetTag: integer);
+      function Voice_Render_Internal(Handle: TVoiceHandle; DestBuffer: PWave_T; var Length: integer): integer; 
+    end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Furthermore we define all the regulars : DestroyObject, Dispatcher, SaveRestoreState, 
+  GetName and ProcessParam. One function you won't find here is Eff_Render, since 
+  we're not making an effect. Instead we have Gen_Render, as this is a full generator. 
+  If it were a hybrid generator, we wouldn't define Gen_Render either but go with 
+  Voice_Render. <br>
+  We also define TriggerVoice, Voice_Release, Voice_Kill and Voice_ProcessEvent 
+  to handle the creation and destruction of voices. <br>
+  Note the Voice_Render_Internal function at the end. This does what Voice_Render 
+  would do in a hybrid generator. I'll get back to this later.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">function CreatePlugInstance(Host: TFruityPlugHost; Tag: integer): TFruityPlug; stdcall;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>And of course we can't go on without having declared CreatePlugInstance.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">implementation 
+
+uses 
+    SynthForm; 
+
+const 
+     nMaxGrains = 24; 
+     GrainLength = 512; <font color="#9999FF">// samples per grain</font></font></pre>
+    </td>
+  </tr>
+</table>
+<p>The implementation part starts with the uses clause for the editor form's unit, 
+  SynthForm. There are also some more constants.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">type 
+    <font color="#9999FF">// voice</font> 
+    TPlugVoice = record 
+      HostTag : integer;
+      Params  : PVoiceParams; 
+      Pos     : array[0..nOsc-1] of longword; 
+      State   : integer;        
+    end; 
+    PPlugVoice = ^TPlugVoice; 
+
+var 
+   SineWaveP : PWaveT;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Now we define a record type to hold some data about the voices we create. Pointers 
+  to these records will be stored in VoiceList. HostTag will hold an identifier 
+  to talk to the host about this voice, provided by the host itself. We also store 
+  the pointer to the voice parameters that the host gives us, the position in 
+  each of the oscillators and a state field. This last one can be 0 or 1, 1 meaning 
+  we need to kill the voice. We'll come back to this.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#9999FF">// create an initialized plugin & return a pointer to the struct</font><font color="#3333FF"> 
+function CreatePlugInstance(Host: TFruityPlugHost; Tag: integer): TFruityPlug; 
+begin 
+  PlugHost := Host; 
+  Result := TTestPlug.Create(Tag); 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>This is the implementation of CreatePlugInstance, the function that will be 
+  exported by the plugin dll. As with FruityGain, we first assign the Host object 
+  to the global variable PlugHost. We then return a newly created plugin object 
+  as the result of the function.</p>
+<p>The constructor doesn't do anything out of the ordinary. First we call the 
+  inherited constructor and initialize the HostTag field. We also assign the address 
+  of the PlugInfo record to the Info field, so FL Studio can access the plugin 
+  information. Then we create the voice list and the editor form.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#9999FF">// create the object</font><font color="#3333FF"> 
+constructor TTestPlug.Create;        
+var 
+   n : integer; 
+begin 
+  inherited Create; 
+
+  HostTag := SetTag; 
+  Info := @PlugInfo;        
+
+  <font color="#9999FF">// init</font> 
+  SineWaveP := PlugHost.WaveTables[0]; 
+  VoiceList := TList.Create;        
+
+  EditorForm := TSynthEditorForm.Create(nil); 
+  with TSynthEditorForm(EditorForm) do 
+  begin 
+    FruityPlug := Self; 
+    for n := 0 to NumParamsConst-1 do 
+      if ParamCtrl[n] is TTrackBar then 
+        ParamValue[n] := TTrackBar(ParamCtrl[n]).Position; 
+
+    ProcessAllParams;
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>When the editor form is created, we tell it who we are, by assigning the Self 
+  pointer to its FruityPlug field. We then initialize our ParamValue array with 
+  the current values of the controls (set in the property editor). When the editor 
+  form was created, it initialized its ParamCtrl array with the parameter controls. 
+  Finally, we call ProcessAllParams to make all the necessary changes.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#9999FF">// destroy the object</font><font color="#3333FF"> 
+procedure TTestPlug.DestroyObject;        
+begin 
+  KillAllVoices;
+  VoiceList.Free; 
+  inherited; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>DestroyObject gets called by FL Studio to destroy the plugin object. The 
+  important thing here is that we free the VoiceList object. All voices that were 
+  in it have been killed by calling KillAllVoices.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">function TTestPlug.Dispatcher(ID, Index, Value: integer): integer; 
+begin 
+  Result := 0; 
+
+  case ID of 
+    FPD_ShowEditor:        
+      <font color="#9999FF">... // this is discussed already for FruityGain</font>
+
+    FPD_SetSampleRate: 
+      begin 
+        SmpRate := Value; 
+        PitchMul := MiddleCMul/SmpRate;        
+      end; 
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>There's one difference in Dispatcher, compared to FruityGain. It also handles 
+  the FPD_SetSampleRate message, which gets sent whenever the sample rate changes. 
+  We simply set SmpRate and calculate a new pitch multiplier.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#9999FF">// save/restore the state to/from a stream </font><font color="#3333FF">
+procedure TTestPlug.SaveRestoreState; 
+begin 
+  if Save then 
+    Stream.Write(@ParamValue, NumParamsConst * 4, nil) 
+  else 
+  begin 
+    Stream.Read(@ParamValue, NumParamsConst * 4, nil); 
+    ProcessAllParams; 
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>No real differences in SaveRestoreState either, except that we save and load 
+  the entire ParamValue array at once. After reading it back, we also call ProcessParams 
+  to make all necesary changes.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#9999FF">// params</font><font color="#3333FF"> 
+function TTestPlug.ProcessParam(ThisIndex, ThisValue, RECFlags: integer): integer; 
+begin 
+  <font color="#9999FF">...   // no important differences compared with FruityGain</font> 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>There are no big differences in ProcessParam either. There are some more parameters 
+  than in FruityGain. Also, we check RECFlags for REC_ShowHint. You don't have 
+  to process this flag. If you do, you have to show some kind of hint, or let 
+  FL Studio show a hint. Here it's done through TDelphiFruityPlug's ShowHintMsg_Percent 
+  and ShowHintMsg_Pitch.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">procedure TTestPlug.GetName(Section, Index, Value: integer; Name: pchar); 
+begin 
+  case Section of 
+    FPN_Param :  StrPCopy(Name, GetLongHint(TSynthEditorForm(EditorForm).ParamCtrl[Index].Hint));
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>No differences in GetName either.</p>
+<p>Now we return to some interesting stuff: handling the creation and killing 
+  of voices.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#9999FF">// create a new voice </font><font color="#3333FF">
+function TTestPlug.TriggerVoice(VoiceParams: PVoiceParams; SetTag: integer): TVoiceHandle; 
+var 
+   Voice : PPlugVoice; 
+   n     : integer; 
+begin 
+  <font color="#9999FF">// create & init</font> 
+  New(Voice); 
+  with Voice^ do 
+  begin 
+    HostTag := SetTag; 
+    for n := 0 to nOsc-1 do 
+      Pos[n] := 0; 
+    Params := VoiceParams; 
+    State := 1; 
+  end; 
+
+  <font color="#9999FF">// add to the list</font> 
+  VoiceList.Add(Voice); 
+  Result := TVoiceHandle(Voice);
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>TriggerVoice gets called by FL Studio when a voice has been created. FL Studio 
+  passes the voice parameters and an identifying tag to the function. <br>
+  We create a new pointer to a TPlugVoice record to store our own voice settings, 
+  and initialize it with the parameters of the function. Finally we add it to 
+  the voice list, so we have access to it at all time.<br>
+  At the very end, we need to return a voice handle. This is some value we decide 
+  upon ourselves, but it needs to be unique. It will be passed to other functions 
+  later to let us know what voice the host is talking about. So we return the 
+  pointer to our TPlugVoice record. This way it's both uniqe and very easy to 
+  know the voice later on.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TTestPlug.Voice_Release(Handle: TVoiceHandle);        
+begin 
+  PPlugVoice(Handle)^.State := -1; <font color="#9999FF">// releasing</font> 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Voice_Release isn't meant to kill the voice (Voice_Kill is meant for that). 
+  Instead, it gives us a warning that the voice will need to be killed. This gives 
+  us the chance to fade it out, for example. We simply respond by setting the 
+  state of the voice to -1, which will be checked for later in Gen_Render.<br>
+  Note that we're casting the Handle parameter to PPlugVoice to get at the state. 
+  Since we returned the pointer to the record as the result of TriggerVoice, FL Studio 
+  passes the same value to this function so it's safe to do this.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#9999FF">// free a voice</font><font color="#3333FF"> 
+procedure TTestPlug.Voice_Kill(Handle: TVoiceHandle); 
+begin 
+  VoiceList.Remove(pointer(Handle)); 
+  Dispose(pointer(Handle));
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>This is where we actually free the memory associated with the voice. First 
+  we remove the record from the voice list (by casting the handle to a pointer). 
+  Then we free the memory.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">function TTestPlug.Voice_ProcessEvent(Handle: TVoiceHandle; EventID, EventValue, Flags: integer): integer; 
+begin 
+  Result := 0; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Voice_ProcessEvent won't be called yet. Nonetheless we need to implement it, 
+  so we don't get an abstract function call when FL Studio does call it in a 
+  later version. We just return zero.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TTestPlug.KillAllVoices; 
+begin 
+  while VoiceList.Count > 0 do 
+    PlugHost.Voice_Kill(PPlugVoice(VoiceList.Items[0])^.HostTag); 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>This internal function (won't be called by FL Studio), runs through the list 
+  of voices and asks the host to kill each one. It's necessary to call the host, 
+  since FL Studio created the voice and also has some memory associated with 
+  it. FL Studio will then call Voice_Kill in the plugin and that's where we 
+  release our own memory.</p>
+<p>Now we arrive at some other internal functions. AddOsc and PutOsc create the 
+  actual wave data from an oscillator's waveform, depending on the speed and starting 
+  position in the waveform. They have mostly the same implementation, except that 
+  PutOsc replaces the existing data in the buffer, whereas AddOsc adds the new 
+  wave data to the existing data in the buffer.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#9999FF">// add an osc</font><font color="#3333FF"> 
+function AddOsc(SourceBuffer, DestBuffer: PWaveT; Length, Pos: longword; Speed: integer; 
+                Level: single): longword; 
+var 
+   n : integer; 
+   i : single; 
+begin
+    <font color="#9999FF">// get input</font> 
+    i := SourceBuffer^[Pos shr WaveT_Shift] * Level * Envelope;
+
+    <font color="#9999FF">// store output</font> 
+    DestBuffer^[n] := DestBuffer^[n] + i;
+
+    <font color="#6666FF">{$Q-}</font> <font color="#9999FF">// shutting of overflow checking</font> 
+    inc(Pos, Speed); 
+  end; 
+
+  Result := Pos;        
+end;</font></pre>
+    </td>
+  </tr>
+  <tr bordercolor="#FFFFFF">
+    
+  </tr>
+</table>
+<p>Then we go on, getting the source data, multiplying it with the current level. 
+  The result of this is put in the destination buffer. As I'll explain when we 
+  get to Gen_Render, we're using a temporary mono buffer here, which will be converted 
+  to stereo and added to the actual buffer we got from FL Studio after all voices 
+  have been processed.</p>
+<p>The PutOsc function is exactly the same as AddOsc, with one difference. We 
+  just assign i to the destination buffer, without looking at what's in there 
+  first. </p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF"><font color="#9999FF">// add an osc (replace)</font> 
+function PutOsc(SourceBuffer, DestBuffer: PWaveT; Length, Pos: longword; Speed: integer; 
+                Level: single): longword; 
+begin
+  <font color="#9999FF">... // the same as AddOsc, except for the following lines</font> 
+
+    <font color="#9999FF">// store output</font> 
+    DestBuffer^[n] := i;
+
+  <font color="#9999FF">...</font>        
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>CopyMonoToStereo does two things. It applies the pan to the buffer and it copies 
+  a mono buffer to stereo. It simply copies all the samples in the mono buffer 
+  to each channel of the stereo buffer after multiplying the left or right channel 
+  pan value.<br>
+  The Pan parameter is between -64 (full left) and +64 (full right). This makes 
+  it easy to calculate, as you can see in the code.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">procedure CopyMonoToStereo(SourceBuffer: PWaveT; DestBuffer: PWAV32FS; Length: integer; Pan: integer);
+var
+   i        : integer;
+   LeftPan  : single;
+   RightPan : single;
+begin
+  <font color="#9999FF">// calculate the pan</font>
+  LeftPan := 1;
+  RightPan := 1;
+  if (Pan &lt; 0) then
+    RightPan := (Pan+64) / 64
+  else
+    RightPan := (64-Pan) / 64;
+
+  for i := 0 to Length-1 do
+  begin
+    DestBuffer^[i, 0] := DestBuffer^[i, 0] + SourceBuffer^[i] * LeftPan;
+    DestBuffer^[i, 1] := DestBuffer^[i ,1] + SourceBuffer^[i] * RightPan;
+  end;
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>ApplyEnvelope is called in Gen_Render when a voice has been rendered, before 
+  it is added to the destination buffer. When a voice is created in TriggerVoice, 
+  we set its State field to 1. ApplyEnvelope looks at the State field to find 
+  out whether to attack (state = 1), release (state = -1) or sustain (state = 
+  0) the voice.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">procedure ApplyEnvelope(Buffer: PWaveT; Length: integer; var State: integer);
+var
+   i        : integer;
+   envelope : single;
+begin
+  if State = 0 then   <font color="#9999FF">// nothing to do if we have to sustain</font>
+    Exit;
+
+  for i := 0 to Length-1 do
+  begin
+    if State = 1 then  <font color="#9999FF">// apply an attacking envelope</font>
+      envelope := i / Length
+    else if State = -1 then
+      envelope := (Length-i) / Length;
+
+    Buffer^[i] := Buffer^[i] * envelope;
+  end;
+
+  if State = 1 then
+    State := 0     <font color="#9999FF">// proceed to sustain</font>
+  else if State = -1 then
+    State := -2;   <font color="#9999FF">// next pass we kill the voice</font>
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>At the end of ApplyEnvelope, we set State to zero if we were attacking (to 
+  go to sustain state), and to -2 if we were releasing (to let Gen_Render kill 
+  the voice).</p>
+<p>We're starting to get to the end of the unit. Just two functions left, but 
+  they're about the most important ones : rendering time !</p>
+<p>Voice_Render_Internal is the function that actually creates audio data for 
+  a given voice (using either AddOsc or PutOsc). It makes sure whether the level 
+  for this voice is zero (if T32Bit(Level).I = 0).</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">function TTestPlug.Voice_Render_Internal(Handle: TVoiceHandle; DestBuffer: PWave_T; var Length: integer): integer;
+var 
+   o, p    : integer; 
+   Speed   : integer; 
+   Replace : boolean; 
+begin 
+  with PPlugVoice(Handle)^ do 
+  begin </font><font color="#0000FF">
+    <font color="#9999FF">// compute osc speed & add them </font>
+    <font color="#3333FF">p := Params^.FinalLevels.Pitch;        
+    Replace := TRUE; 
+    for o := 0 to nOsc-1 do with Osc[o] do 
+    begin 
+      Speed := GetStep_Cents(p + Pitch); 
+      if T32Bit(Level).I = 0 then 
+        inc(Pos[o], Speed*Length) 
+      else if Replace then 
+      begin 
+        Pos[o] := PutOsc(ShapeP, DestBuffer, Length, Pos[o], Speed, State, Level * Param^.FinalLevels.Vol); 
+        Replace := FALSE; 
+      end 
+      else 
+        Pos[o] := AddOsc(ShapeP, DestBuffer, Length, Pos[o], Speed, State, Level * Param^.FinalLevels.Vol); 
+    end; 
+  end; 
+
+  Result := FVR_Ok; 
+end;</font></font></pre>
+    </td>
+  </tr>
+</table>
+<p>This function could be used for a hybrid generator as well. Just declare Voice_Render 
+  and implement it almost exactly like this, and you have a working hybrid generator. 
+  Of course PutOsc and AddOsc would need to be redefined to accept a stereo destination 
+  buffer, but for the rest it would be the same. Also, you wouldn't multiply the 
+  oscillator level with Param^.FinalLevels.Vol. That's something we need to do 
+  because we're a full generator.</p>
+<p>The final function is this unit is Gen_Render. For a full generator, this will 
+  get called to render all currently active voices. So what we do is run through 
+  the voice list and for each voice we check whether it's scheduled to be killed 
+  (State = -2, this is set in ApplyEnvelope). If so, we call upon the host to 
+  do this. Else we call Voice_Render_Internal to render the voice.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">procedure TTestPlug.Gen_Render(DestBuffer: PWAV32FS; var Length: integer); 
+var 
+   n     : integer; 
+   temp  : PWaveT;
+   voice : PPlugVoice;
+begin
+  with VoiceList do 
+  begin 
+    if Count = 0 then 
+      Length := 0 <font color="#9999FF">// nothing to render, so tell it</font> 
+    else 
+    begin 
+      GetMem(temp, Length shl 2);
+      for n := Count-1 downto 0 do
+      begin
+        voice := PPlugVoice(List^[n]);
+        
+        if voice^.State = -2 then 
+          PlugHost.Voice_Kill(HostTag) <font color="#9999FF">// let the host kill the voice</font> 
+        else 
+        begin
+          Voice_Render_Internal(integer(voice), temp, Length); <font color="#9999FF">// render it</font> 
+          ApplyEnvelope(temp, Length, voice^.State);
+          CopyMonoToStereo(temp, DestBuffer, Length, voice^.Params^.FinalLevels.Pan);
+        end;
+      end; 
+
+      FreeMem(temp);
+    end; 
+  end; 
+end; 
+
+end.</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Notice the check if there are any voices. If there aren't, we set Length to 
+  zero, indicating to FL Studio that we haven't rendered anything. We could 
+  also render for example half of the length, in which case we would set Length 
+  to half its initial value.</p>
+<p>We also create a temporary mono buffer (outside of the loop) in which the voices 
+  are all rendered. Finally, we call ApplyEnvelope (which does exactly what it 
+  says) and CopyMonoToStereo to copy the temp buffer into the destination buffer 
+  provided by FL Studio. If we didn't do all this, we would block all other 
+  channels.</p>
+<p><a href="#_top">Top</a></p>
+<p>&nbsp;</p>
+<p><a name="_synthform"></a><b>SynthForm.pas</b><br>
+  There are no big differences between the editor form of this plugin and that 
+  of FruityGain. There are some less important differences, but you can probably 
+  spot those in the source code.</p>
+<p><a href="#_top">Top</a></p>
+<p>&nbsp;</p>
+<p><a name="_synthres"></a><b>SynthRes.pas</b><br>
+  This resource holds the popup menu for the editor form. This is implemented 
+  as in the FruityGain example (except that there it's part of the editor form).</p>
+<p><a href="#_top">Top</a></p>
+</body>
+</html>

@@ -1,0 +1,7 @@
+; Osc3_VC.def : Declares the module parameters for the DLL.
+
+LIBRARY      "Osc3_VC"
+DESCRIPTION  'Osc3_VC Windows Dynamic Link Library'
+
+EXPORTS
+    CreatePlugInstance

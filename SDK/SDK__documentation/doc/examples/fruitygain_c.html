@@ -1,0 +1,504 @@
+<html>
+<head>
+<title>FruityGain (C++)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<a name="_top"></a> 
+<p><a href="fruitygain_d.html">FruityGain (Delphi)</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>FruityGain 
+  (C++)</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="osc3_d.html">Osc3 
+  (Delphi)</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="osc3_c.html">Osc3 
+  (C++)</a> <b></b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="sine_d.html">Sine 
+  (Delphi)</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="sine_c.html">Sine 
+  (C++)</a>&nbsp;</p>
+<table width="10" border="0" bgcolor="EEEEFF">
+  <tr>
+    <td><b><font size="5">FruityGain&nbsp;(C++)</font></b></td>
+  </tr>
+</table>
+<p><a href="#_gain">Gain.h</a><br>
+  <a href="#_gain_cpp">Gain.cpp</a> <br>
+</p>
+<p>This page contains a run-through of the FruityGain header and source files. 
+  Because this is meant to be a tutorial for all C++ compilers (most notably C++Builder 
+  and Visual C++), all compiler-specific lines have comments stating what is going 
+  on instead of source code. There's no explanation yet for the implementation 
+  of the editor window.</p>
+<p><a name="_gain_h"></a><b>Gain.h</b><br>
+  This is the header file that contains the plugin class definition. <br>
+  <br>
+  First we have the include section.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">#ifndef GAIN_H
+#define GAIN_H
+
+#include "fp_plugclass.h"
+#include "fp_cplug.h"</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Here we include some sdk headers (fp_plugclass.h and fp_cplug.h). <br>
+  <br>
+  Next we define some useful constants. This is not necessary, but it can make 
+  life a lot easier when you start changing these values. FruityGain has a seperate 
+  gain value for the left and right channels, so we have two parameters. There 
+  are also a minimum and maximum value defined.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#9999FF">// the number of parameters</font><font color="#3333FF">
+const NumParams = 2;
+
+<font color="#9999FF">// the parameter indexes</font>
+const prmGainLeft  = 0;
+const prmGainRight = 1;
+
+<font color="#9999FF">// minimum and maximum values of the gain parameters</font>
+const GainMinimum = 0;
+const GainMaximum = 20;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We're now ready to declare the plugin class. Note that we're deriving from 
+  TCPPFruityPlug. This class implements some useful functions so it's not a bad 
+  idea to derive from this instead of TFruityPlug. For example, TCPPFruityPlug 
+  implements DestroyObject in order to delete the object, so you don't have to 
+  do this anymore. <br>
+  <br>
+  Here we first have some variables in which we store the parameter values (GainLeftInt, 
+  GainRightInt, GainLeft, GainRight). We have both integer and floating point 
+  variables for this. The integer variables are for communication with the editor 
+  controls (which use integers) and the floating point ones are for calculations 
+  in Eff_Render (so we don't have to calculate them every time Eff_Render is called).</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">class TFruityGain : public TCPPFruityPlug {
+public:
+    int GainLeftInt;
+    int GainRightInt;
+    float GainLeft;
+    float GainRight;
+
+    TFruityGain(int Tag);
+
+    virtual int _stdcall Dispatcher(int ID, int Index, int Value);
+    virtual void _stdcall Idle();
+    virtual void _stdcall SaveRestoreState(IStream *Stream, BOOL Save);
+
+    <font color="#9999FF">// names (see FPN_Param) (Name must be at least 256 chars long)</font>
+    virtual void _stdcall GetName(int Section, int Index, int Value, char *Name);
+
+    <font color="#9999FF">// events</font>
+    virtual int _stdcall ProcessParam(int Index, int Value, int RECFlags);
+
+    <font color="#9999FF">// effect processing (source & dest can be the same)</font>
+    virtual void _stdcall Eff_Render(PWAV32FS SourceBuffer, PWAV32FS DestBuffer, int Length);
+
+    <font color="#9999FF">// specific to this plugin</font>
+    void GainIntToSingle();
+    void ResetParams();
+};</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Then we define a constructor. This has one parameter, Tag, that is passed on 
+  from the host. We'll get back to this when we discuss the implementation of 
+  the constructor. We could also have overridden DestroyObject if we wanted to 
+  do something special when that is called by FL Studio. But since we derive 
+  from TDelphiFruityPlug, DestroyObject is already implemented to free the object, 
+  so we don't need to do that anymore.<br>
+  The rest of the functions defined will be discussed when we reach their implementation. 
+  Just a little note here that GainIntToSingle and ResetParams are helper functions 
+  for this specific plugin, so they probably won't be present in your own plugins.</p>
+<p><a href="#_top">Top</a></p>
+<p>&nbsp;</p>
+<p><a name="_gain_cpp"></a><b>Gain.cpp</b><br>
+  So we reach the implementation.<br>
+</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#9999FF">... // some compiler-specific includes</font><font color="#3333FF">
+
+#include <windows.h>&lt;windows.h&gt;
+#include <stdio.h>&lt;stdio.h&gt;
+#include "Gain.h"
+
+
+<font color="#9999FF">// the information structure describing this plugin to the host</font>
+TFruityPlugInfo PlugInfo = {
+    CurrentSDKVersion,
+    "FruityGain_CB",
+    "F.Gain CB",
+    FPF_Type_Effect,
+    NumParams,
+    0  <font color="#9999FF">// infinite</font>
+};</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We declare a new variable of type TFruityPlugInfo. This record will be read 
+  by FL Studio later on to find out what kind of plugin this is. We set <b>SDKVersion</b> 
+  to the constant value CurrentSDKVersion, so FL Studio knows what we expect 
+  from it. <br>
+  We also set <b>LongName</b> to the name of the dll, without the .dll extension. 
+  The name of the dll should be as unique as possible. So simply &quot;Gain&quot; 
+  would have been a bad name, whereas &quot;XFIGOEJSL&quot; might be a good unique 
+  name, but probably not very nice to the user. You might use something like &quot;Ralfs 
+  Gain&quot; for example as the name of your plugin, which would make it reasonably 
+  unique.<br>
+  <b>ShortName</b> can be anything you want, but it should also be as unique as 
+  possible. It also shouldn't be very long (as the name suggests).<br>
+  <b>Flags</b> actually defines what kind of plugin we're creating. We're making 
+  an effect plugin, so we use FPF_Type_Effect. There are some other flags you 
+  can use here too (see <a href="../constants.html#_pluginflags">Plugin Flag Constants</a>).<br>
+  We tell FL Studio how many parameters we have in <b>NumParams</b>. We also 
+  set <b>DefPoly</b> to 0, as we're creating an effect plugin.</p>
+<p>We begin by implementing CreatePlugInstance. First we assign Host to the global 
+  variable PlugHost. This is necessary, as some functions in TDelphiFruityPlug 
+  expect it to be there. Then we create our plugin object and pass it back to 
+  FL Studio as the result of the function.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">extern "C" __declspec(dllexport) TFruityPlug * _stdcall CreatePlugInstance(TFruityPlugHost *Host, int Tag)
+{
+    PlugHost = Host;
+    TFruityGain *gain = new TFruityGain(Tag);
+    return (TFruityPlug *)gain;
+};
+
+<font color="#9999FF">// note : in Visual C++ the declaration for this function is different 
+// and we use a .def file to export the function
+//
+//   extern "C" TFruityPlug * _stdcall CreatePlugInstance(TFruityPlugHost *Host, int Tag)</font></font></pre>
+    </td>
+  </tr>
+</table>
+<p>Note that we're exporting the function from the dll (using _declspec(dllexport)) 
+  and it's declared _stdcall. Also it's declared using extern &quot;C&quot;, which 
+  prevents name mangling.</p>
+<p>Now we reach the implementation of the constructor. The first thing we do of 
+  course is call the inherited constructor. <br>
+  We also assign the address of the PlugInfo variable we declared earlier to the 
+  Info member of TFruityPlug. This way, FL Studio knows where to find it.<br>
+  Then we assign the Tag parameter (passed by CreatePlugInstance) to the HostTag 
+  member, so we can use it later on. </p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#9999FF">// TFruityGain</font><font color="#3333FF">
+
+TFruityGain::TFruityGain(int Tag)
+    : TCPPFruityPlug()
+{
+    Info = &PlugInfo;
+    HostTag = Tag;
+
+    <font color="#9999FF">...  // here we create the editor window, which is compiler-specific</font>
+
+    ResetParams();
+}</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We also create our editor form in the constructor.<br>
+  Finally, we reset the parameter values. ResetParams is used for this, as resetting 
+  the parameters is done from several places.</p>
+<p>Next is Dispatcher. This function passes messages from FL Studio to the plugin. 
+  These are identified by the ID parameter (for a list of all values, see <a href="../constants.html#_dispatcherid">Dispatcher 
+  ID's</a>). The Index and Value parameters have different meanings, depending 
+  on the value of ID.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">int _stdcall TFruityGain::Dispatcher(int ID, int Index, int Value)
+{
+    switch (ID) {
+        <font color="#9999FF">// show the editor</font>
+        case FPD_ShowEditor :
+            if (Value == 0)
+            {
+                <font color="#9999FF">...   // hide the editor window</font>
+                <font color="#9999FF">...   // set the editor window's parent handle to zero</font>
+            }
+            else
+            {
+                <font color="#9999FF">...   // set the editor window's parent handle to (HWND)Value</font>
+                <font color="#9999FF">...   // show the editor window</font>
+            }
+            <font color="#9999FF">...   // set EditorHandle to the handle of the editor window</font>
+            break;
+    }
+
+    return 0;
+}</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Here we implement a reaction to the FPD_ShowEditor message. This tells us that 
+  FL Studio wants the editor window to be either hidden or shown, depending 
+  on the value of Value. Value holds the parent window we have to use to show 
+  our editor window. <br>
+  So if Value is zero, we hide the window, and then we set the parent window to 
+  zero. <br>
+  If Value is not zero, we assign it to ParentWindow for our editor, and then 
+  we show the editor. <br>
+  Note that the order of these things is important. If ParentWindow is zero while 
+  the editor window is already or still shown, the user will see it floating on 
+  the screen, which doesn't make a good impression.<br>
+  Finally we set TFruityPlug's EditorHandle member to the handle of our editor 
+  window. </p>
+<p> Eff_Render is the core of an effect plugin. It gets called continuously to 
+  process data while the plugin is active. <br>
+  Data is to be read from SourceBuffer, processed, and written to DestBuffer. 
+  These two parameters point to a buffer of interlaced samples. Interlaced means 
+  that the samples for the two channels (left and right) are mixed together. So 
+  first you get the first left sample, then the first right sample, then the second 
+  left sample and so on. <br>
+  Note that SourceBuffer and DestBuffer could point to the same buffer, so it 
+  might be worth checking for this to save some time.<br>
+  The PWAV32FS type makes it easy to work with these buffers, as shown in below.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">void _stdcall TFruityGain::Eff_Render(PWAV32FS SourceBuffer, PWAV32FS DestBuffer, int Length)
+{
+   float left, right;
+
+   left = GainLeft;
+   right = GainRight;
+
+   for (int i = 0; i < Length; i++)
+   {
+        (*DestBuffer)[i][0] = (*SourceBuffer)[i][0] * left;
+        (*DestBuffer)[i][1] = (*SourceBuffer)[i][1] * right;
+   }
+}</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We first assign GainLeft and GainRight to some local variables, in case they 
+  change while we're processing.<br>
+  Then we run through the buffers, each time multiplying the channel's gain with 
+  the current sample. As you can see, Length specifies the number of samples in 
+  each channel, not the total amount of samples in the buffer.</p>
+<p>GainIntToSingle is a function specific to this plugin. It translates the integer 
+  parameter values (from the editor controls) to floating point values. What's 
+  important here is that we lock and unlock the mixing threads, to make sure that 
+  this doesn't happen from two threads at the same time, or that other functions 
+  that depend on these values are called from a different thread. It's probably 
+  a bit overkill in this example, but it shows how to do it.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">void TFruityGain::GainIntToSingle()
+{
+    <font color="#9999FF">// for safety when we update the actual value, we lock the mixing thread</font>
+    Lock();
+    GainLeft = (GainLeftInt / 4.) + 1;
+    GainRight = (GainRightInt / 4.) + 1;
+    Unlock();  <font color="#9999FF">// and unlock it again when we're through (very important !)</font>
+}</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Next is the implementation of GetName. This procedure is called by FL Studio 
+  when it wants a string representation of some value. What it wants translated 
+  is specified by the Section parameter (see <a href="../constants.html#_getname">GetName 
+  constants</a>). The meanings of Index and Value depend on the value of Section. 
+  Name points to a buffer that you have to put the translated string into. The 
+  memory for Name is assigned by FL Studio, so you don't need to worry about 
+  this. There's room for at least 256 characters in Name.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">void _stdcall TFruityGain::GetName(int Section, int Index, int Value, char *Name)
+{
+    if (Section == FPN_Param)
+    {
+        switch (Index) {
+            case prmGainLeft  :  strcpy(Name, "Left Gain");  break;
+            case prmGainRight :  strcpy(Name, "Right Gain");  break;
+        }
+    }
+    else if (Section == FPN_ParamValue)
+    {
+        float tempfloat = (Value / 4.) + 1;
+        sprintf(Name, "%.2fx", tempfloat);
+    }
+}</font></pre>
+    </td>
+  </tr>
+  <tr bordercolor="#FFFFFF"> </tr>
+</table>
+<p>We check for two Section values here : FPN_Param (a parameter name is required) 
+  and FPN_ParamValue (a parameter value is to be translated). In both cases, Index 
+  tells us what parameter FL Studio is talking about. In the case of FPN_ParamValue, 
+  Value holds the value to be translated. Don't use your own internal values for 
+  this, since it's not always the current value that has to be translated.</p>
+<p>Next is the Idle procedure. You can use this to perform some action when the 
+  user isn't doing anything. <br>
+  In the C++Builder example, we do something very nice which you might want to 
+  implement in your own plugins as well. We check whether the mouse is over a 
+  control (on our editor form of course) and tell FL Studio to show a hint message. 
+  (Not in the Visual C++ examples, sorry)</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">void _stdcall TFruityGain::Idle()
+{
+}</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Now we come to the ProcessParam function. This is a bit complicated, so I'll 
+  split it up into several parts.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">int _stdcall TFruityGain::ProcessParam(int Index, int Value, int RECFlags)
+{
+    if (Index < NumParams)
+    {
+        if (RECFlags & REC_FromMIDI != 0)
+            Value = TranslateMidi(Value, GainMinimum, GainMaximum); </font></pre>
+    </td>
+  </tr>
+</table>
+<p>First we check whether Index actually identifies a valid parameter. <br>
+  Then we start checking the flags present in RECFlags. The order in which we 
+  check these is important. We start by checking for REC_FromMIDI. This means 
+  that Value holds a value between 0 and 65536, that needs to be translated to 
+  the range for our parameter. How this happens depends on the minimum and maximum 
+  values of the individual parameters. Since our parameters have the same minimum 
+  and maximum, we don't need to check Index. TCPPFruityPlug provides the function 
+  TranslateMIDI, so you don't need to implement this yourself. <br>
+  <br>
+  Next we check whether we need to change the value of a parameter to a new value 
+  or return a parameter value to FL Studio.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">        if (RECFlags & REC_UpdateValue != 0)
+        {
+            switch(Index) {
+                case prmGainLeft  :  GainLeftInt = Value;  break;
+                case prmGainRight :  GainRightInt = Value;  break;
+            }
+            GainIntToSingle();
+        }</font></pre>
+    </td>
+  </tr>
+</table>
+<p>If RECFlags includes REC_UpdateValue, we need to change a parameter's value. 
+  So we check Index to see which parameter we have to change and set the value. 
+  In this example, GainIntToSingle is called to also set the floating point values.<br>
+  Note that we're not changing the controls on the editor window yet. That's for 
+  a bit later.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">        else if (RECFlags & REC_GetValue != 0)
+        {
+            switch (Index) {
+                case prmGainLeft  :  Value = GainLeftInt;  break;
+                case prmGainRight :  Value = GainRightInt;  break;
+            }
+        }</font></pre>
+    </td>
+  </tr>
+</table>
+<p>If REC_GetValue is in RECFlags, FL Studio expects us to return the value 
+  of a parameter as the result of the function. This flag cannot be present when 
+  REC_UpdateValue is present, so we use an if .. then .. else construct. We look 
+  at Index to know which parameter FL Studio is talking about and change Value 
+  to the integer value of the parameter.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">        if (RECFlags & REC_UpdateControl != 0)
+            <font color="#9999FF">...   // we update the control on the editor window here</font>
+    }
+
+    return Value;
+}</font></pre>
+    </td>
+  </tr>
+</table>
+<p>The final check we make is for REC_UpdateControl. When this is not present, 
+  don't update the editor window's controls ! If it is, update the control for 
+  this parameter.<br>
+  <br>
+  At the end of the function, we assign Value to Result. It's safe to always do 
+  this, regardless of whether or not REC_GetValue is present in RECFlags.</p>
+<p>Time to move on to the next function.</p>
+<table width="95%" border="1" bordercolor="#0000FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">void TFruityGain::ResetParams()
+{
+    <font color="#9999FF">// start with a gain of 1.5 of both channels</font>
+    GainLeftInt = 2;
+    GainRightInt = 2;
+    GainIntToSingle();  <font color="#9999FF">// translate the int gain to floating point value</font>
+
+    <font color="#9999FF">...   // update the editor window's controls here</font>
+}</font></pre>
+    </td>
+  </tr>
+</table>
+<p>ResetParams is an internal function to reset the parameters to their default 
+  values. Here, we also call GainIntToSingle to set the floating point variables 
+  and update the editor window's controls afterwards.</p>
+<p>Then comes SaveRestoreState. This function allows the plugin to write its state 
+  to and read it from a stream, which could be a file, or memory, or whatever. 
+  The Save parameter tells us whether FL Studio expects the plugin to save or 
+  restore.<br>
+  The Stream parameter is of type IStream. You can use this just like any object. 
+  There are several functions available in IStream, but the most important are 
+  Write and Read. One thing to watch out for, is that you have to read the exact 
+  same amount of data from the stream as was written to this. For simple plugins, 
+  you can do this simply by reading and writing the same data. For more complex 
+  plugins, it might be necessary to first write the amount of data you're going 
+  to write, or some sort of version number, so that you never make a mistake.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">void _stdcall TFruityGain::SaveRestoreState(IStream *Stream, BOOL Save)
+{
+    unsigned long written, read;
+
+    if (Save)
+    {
+        Stream->Write(&GainLeftInt, sizeof(long), &written);
+        Stream->Write(&GainRightInt, sizeof(long), &written);
+    }
+    else
+    {
+        Stream->Read(&GainLeftInt, sizeof(long), &read);
+        Stream->Read(&GainRightInt, sizeof(long), &read);
+
+        GainIntToSingle();
+        ProcessAllParams();
+    }
+}</font></pre>
+    </td>
+  </tr>
+</table>
+<p>First we check Save, so we know what to do. IStream.Write and IStream.Read 
+  work similarly. The first parameter is a pointer to the data to write away. 
+  Here we pass the address of the integer parameter variables using the &amp; 
+  operator. The second parameter is the size of the data to be written, which 
+  we find by using sizeof. The last parameter is a pointer to a long. In the case 
+  of Write, this will hold the number of bytes which were actually written to 
+  the stream. In the case of Read, this will hold the number of bytes actually 
+  read from the stream. After reading, we also update the parameters and controls 
+  by calling GainIntToSingle and ProcessAllParams.</p>
+<p><a href="#_top">Top</a> </p>
+</body>
+</html>

@@ -1,0 +1,8 @@
+//This file gets configured by CMake.
+
+#pragma once
+
+#define PLUGIN_NAME "@PROJECT_NAME@"
+#define PLUGIN_DESCRIPTION "@PLUGIN_DESCRIPTION@"
+#define PLUGIN_IS_GENERATOR @IS_GENERATOR@
+#define PLUGIN_IS_EFFECT @IS_EFFECT@

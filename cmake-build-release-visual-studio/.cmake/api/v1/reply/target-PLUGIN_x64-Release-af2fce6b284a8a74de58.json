@@ -1,0 +1,208 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "Plugin/PLUGIN_x64.dll"
+		},
+		{
+			"path" : "Plugin/PLUGIN_x64.lib"
+		},
+		{
+			"path" : "Plugin/PLUGIN_x64.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"install",
+			"include",
+			"target_link_libraries",
+			"add_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"Plugin/CMakeLists.txt",
+			"Plugin/utils/install_rules.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 30,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 46,
+				"parent" : 0
+			},
+			{
+				"file" : 1,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 8,
+				"parent" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 38,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 49,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 26,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 41,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -MD"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"define" : "PLUGIN_x64_EXPORTS"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "_AFXDLL"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 7,
+					"path" : "C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/cmake-build-release-visual-studio/Plugin"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "C:/Users/Thoma/dev/FL-Studio-SDK-CMake-Template/SDK"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 5,
+			"id" : "fl_sdk::@844aa9b0a09c37829b2b"
+		}
+	],
+	"id" : "PLUGIN_x64::@093c6b9be130a3fdbf8e",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 4,
+				"path" : "C:/Program Files/Image-Line/FL Studio 20/Plugins/Fruity/Effects/PLUGIN"
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "C:/Program Files (x86)/FL_TEMPLATE"
+		}
+	},
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/machine:x64 /INCREMENTAL:NO /DEF:C:\\Users\\Thoma\\dev\\FL-Studio-SDK-CMake-Template\\cmake-build-release-visual-studio\\Plugin\\PLUGIN.def",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "SDK\\fl_sdk.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "PLUGIN_x64",
+	"nameOnDisk" : "PLUGIN_x64.dll",
+	"paths" : 
+	{
+		"build" : "Plugin",
+		"source" : "Plugin"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"path" : "Plugin/plugin.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Plugin/plugin.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "cmake-build-release-visual-studio/Plugin/PLUGIN.def",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "SHARED_LIBRARY"
+}

@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>Processing data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<p><a href="principles.html">First</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href="voices.html">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="parameters.html">Next</a> 
+</p>
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Processing&nbsp;data</font></b></td>
+  </tr>
+</table>
+<p>The main task of an audio plugin is of course to work with audio data. Depending 
+  on the type of plugin, this is done in either Eff_Render (for effects), in Gen_Render 
+  (for full generators) or in Voice_Render (for hybrid generators). For both types 
+  of generators you'll also want to check out <a href="voices.html">Working with 
+  voices</a> so you'll actually have something to generate sound from.</p>
+<p><b>Common to all processing</b><br>
+  First of all, samples in Fruity plugins are floating point values (single in 
+  Delphi, float in C++). They range from -1.0 to +1.0.<br>
+  <br>
+  Audio data in Fruity plugins is always stereo. So there's always a left and 
+  a right channel. The samples are interlaced. When you get an audio buffer from 
+  FL Studio (of type <a href="../types.html">PWAV32FS</a>), the first sample 
+  is on the left channel, the second sample is for the right channel, the third 
+  is on the left channel again, and so on. So a buffer contains double the amount 
+  of samples that the Length parameter (see below) specifies. The PWAV32FS type 
+  makes it easy to work with buffers sent by FL Studio.<br>
+  <br>
+  <br>
+  <b>Eff_Render</b><br>
+  An effect always receives a source and a destination buffer in Eff_Render. The 
+  source buffer (SourceBuffer parameter) shouldn't be altered. Instead, samples 
+  are to be read from the source buffer and saved in the destination buffer (DestBuffer) 
+  after being processed.<br>
+  <br>
+  The Length parameter specifies how many samples the buffers contain for each 
+  channel. For example, when Length is 1024, the buffers contain 1024 samples 
+  on the left channel and 1024 samples on the right channel, making 2048 samples 
+  in total.<br>
+  <br>
+  SourceBuffer and DestBuffer can be the same (that means they could point to 
+  the same memory block). It's worth to check for this, as it could save you the 
+  trouble (and cpu) of copying data from one buffer to the other. One way of going 
+  about this could be the following: check if the pointers are the same. If they 
+  are not, copy the data from SourceBuffer to SestBuffer. Now you can continue 
+  processing on DestBuffer only, which you can also do if SourceBuffer and DestBuffer 
+  are the same. You have to think this through however and find out if this method 
+  works for your particular plugin.<br>
+  <br>
+  <b>Gen_Render</b><br>
+  A generator only has one buffer parameter in Gen_Render: the destination buffer 
+  (DestBuffer). This is of course because a generator does not apply an effect 
+  to already existing samples, but instead creates entirely new samples.<br>
+  <br>
+  The Length parameter in Gen_Render serves a somewhat different purpose than 
+  in Eff_Render. It still specifies how many samples are in the buffers for each 
+  channel, just like in Eff_Render. But this value is a maximum in Gen_Render. 
+  The generator may choose to generate less samples than Length specifies. In 
+  this case, Length has to be set to the actual amount of samples that were generated 
+  before the function returns. For this reason, Length in Gen_Render can be altered 
+  by the function (it is a var parameter in Delphi and a reference (&amp;) in 
+  C++).<br>
+  <br>
+  Gen_Render needs to render all currently active voices. It's probably a good 
+  idea to keep those in a list and run through that. It also needs to take care 
+  of stuff like envelopes itself, unlike Voice_Render. You can take a look at 
+  Osc3 for an example of what Gen_Render has to do.<br>
+  <br>
+  Take care to always check the levels of a voice before rendering, as FL Studio 
+  can change those at any time (for example: when the user chooses to slide a 
+  note up or down).<br>
+  <br>
+  <br>
+  <b>Voice_Render</b><br>
+  This function is called for a hybrid generator when a voice slice needs to be 
+  rendered. It works in the same way as Gen_Render, with one big difference: you 
+  only have to render one voice each time. The function has an extra parameter 
+  (Handle) that identifies the voice to be rendered. This handle is the same value 
+  you returned when TriggerVoice was called (see <a href="voices.html">Working 
+  with voices</a>). Voice_Render also doesn't return a result, unlike Gen_Render.</p>
+</body>
+</html>

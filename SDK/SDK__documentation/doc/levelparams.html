@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>TLevelParams</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="20" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">TLevelParams</font></b></td>
+  </tr>
+</table>
+<p>This structure holds the parameters for a channel. They're used both for final 
+  voice levels (voice levels+parent channel levels) and original voice levels. 
+  TLevelParams is used in <a href="#_voiceparams">TVoiceParams</a>.</p>
+<p>All of these parameters can go outside their defined range!</p>
+<div align="left"></div>
+<table width="95%" border="1" align="center" cellpadding="4" bordercolor="#FFFFFF">
+  <tr> 
+    <td bordercolor="#333333"><div align="justify"><font color="#990000" size="-1">NOTE: 
+        </font><font size="-1">In version 1.4 of the sdk, TLevelParams has been 
+        changed to have floating point fields for Pan and Pitch. The old version 
+        of TLevelParams has been renamed to TLevelParams_Old. Always use the new 
+        version for new plugins. For old projects, you can leave the FPF_NewVoiceParams 
+        out of the plugin flags (it's in the combo's by default). </font></div></td>
+  </tr>
+</table>
+<p><b>Fields</b></p>
+<table width="100%" border="0">
+  <tr bgcolor="DDDDEE"> 
+    <td width="17%">Pan</td>
+    <td>Panning (-1.0..1.0)</td>
+  </tr>
+  <tr bgcolor="DDDDEE"> 
+    <td width="17%">Vol</td>
+    <td>Volume/velocity (0..1)</td>
+  </tr>
+  <tr bgcolor="DDDDEE"> 
+    <td width="17%">Pitch</td>
+    <td>Pitch (in cents) (semitone=Pitch/100)</td>
+  </tr>
+  <tr bgcolor="DDDDEE"> 
+    <td width="17%">FCut</td>
+    <td>Filter cutoff (0..1)</td>
+  </tr>
+  <tr bgcolor="DDDDEE">
+    <td width="17%">FRes</td>
+    <td>Filter Q (0..1)</td>
+  </tr>
+</table>
+<p><b>Declaration</b> in FP_PlugClass (.pas / .h)</p>
+<p><font color="CC0000"><i>Delphi</i></font></p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> <pre><font color="#0000FF">TLevelParams=Record 
+  Pan   :Single; <br>&nbsp;&nbsp;Vol   :Single; <br>&nbsp;&nbsp;Pitch :Single; <br>&nbsp;&nbsp;FCut  :Single;
+  FRes  :Single;
+End; <br>PLevelParams=^TLevelParams;</font></pre> </td>
+  </tr>
+</table>
+<p> <i><font color="CC0000">C++</font></i></p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> <pre><font color="#0000FF">typedef struct { 
+    float Pan; <br>    float Vol; <br>&nbsp;&nbsp;&nbsp;&nbsp;float Pitch; <br>&nbsp;&nbsp;&nbsp;&nbsp;float FCut; <br>&nbsp;&nbsp;&nbsp;&nbsp;float FRes; <br>} TLevelParams; <br>typedef TLevelParams *PLevelParams;</font></pre> </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<a name="_voiceparams"></a>
+<table width="20" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">TVoiceParams</font></b></td>
+  </tr>
+</table>
+<p>This is the type for the parameters for a voice. Normally, you'll only use 
+  FinalLevels. The final levels are the initial (voice) levels altered by the 
+  channel levels. But the initial levels are also available for, for example, 
+  note layering. In any case the initial levels are made to be checked once the 
+  voice is triggered, while the other ones are to be checked every time</p>
+<p><b>Fields</b></p>
+<table width="100%" border="0">
+  <tr bgcolor="DDDDEE"> 
+    <td bgcolor="DDDDEE" width="17%">InitLevels</td>
+    <td>(TLevelParams)</td>
+  </tr>
+  <tr bgcolor="DDDDEE">
+    <td bgcolor="DDDDEE" width="17%">FinalLevels</td>
+    <td>(TLevelParams)</td>
+  </tr>
+</table>
+<p><b>Declaration</b> in FP_PlugClass (.pas / .h)</p>
+<p><i><font color="CC0000">Delphi</font></i></p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> <pre><font color="#3333FF">TVoiceParams = Record <br>&nbsp;&nbsp;InitLevels,<br>&nbsp;&nbsp;FinalLevels&nbsp;: TLevelParams; <br>End; <br>PVoiceParams = ^TVoiceParams;</font></pre> </td>
+  </tr>
+</table>
+<p>
+  <i><font color="CC0000">C++</font></i></p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> <pre><font color="#3333FF">typedef struct { <br>    TLevelParams InitLevels; <br>&nbsp;&nbsp;&nbsp;&nbsp;TLevelParams FinalLevels; <br>} TVoiceParams; 
+typedef TVoiceParams *PVoiceParams;</font></pre> </td>
+  </tr>
+</table>
+</body>
+</html>

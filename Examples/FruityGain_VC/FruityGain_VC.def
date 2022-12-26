@@ -1,0 +1,8 @@
+; FruityGain_VC.def : Declares the module parameters for the DLL.
+
+LIBRARY      "FruityGain_VC"
+DESCRIPTION  'FruityGain_VC Windows Dynamic Link Library'
+
+EXPORTS
+    CreatePlugInstance
+
