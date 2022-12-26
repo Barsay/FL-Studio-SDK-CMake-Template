@@ -5,7 +5,7 @@
     <img src="assets/fl_logo.png" width="200">
 </p>
 
-This is a *unofficial* CMake template for building custom FL Studio plugins ("fruity plugins"), using FL Studio SDK. 
+This is a *unofficial* CMake template for building custom FL Studio plugins ("FL" plugins), using FL Studio SDK. 
 
 ## Dependencies
 This project is intended to be used on **Windows**, using a **Visual Studio** compiler. <br>
