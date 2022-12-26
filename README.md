@@ -1,9 +1,11 @@
 # CMake C++ Template for FL Studio SDK
+
+
 <p align="center">
-    <img src="assets/fl_logo.png" width="600">
+    <img src="assets/fl_logo.png" width="200">
 </p>
 
-Template for a 
+This is a *unofficial* CMake template for building custom FL Studio plugins ("fruity plugins"), using FL Studio SDK. 
 
 ## Dependencies
 This project is intended to be used on **Windows**, using a **Visual Studio** compiler. <br>
@@ -14,7 +16,7 @@ In Project Root Directory:
 - `SDK` folder contains the [FL Studio SDK](https://www.image-line.com/developers/) with some slight modifications and the CMakeLists.txt.
 The SDK gets built as a library and linked against the Plugin(s). The subdirectory `SDK/SDK_documentation` contains the documentation as provided by the SDK.
 - `Examples` folder contains the 4 example projects (FruityGain_VC, Saw_VC and others) provided by the SDK. Each one is built as a separate CMake project, and 
-can be enabled in the root CMakeLists.txt.
+can be enabled in the root CMakeLists.txt. The source files contain some debug and small changes. They could contain some bugs still. 
 - `Plugin` folder contains the plugin project template. Edit and add files there to build your project.
 - `CMakeLists.txt` is the "root" Cmake. This project shall be built from there.
 
@@ -28,7 +30,7 @@ can be enabled in the root CMakeLists.txt.
 ### 2. Plugin CMakeLists.txt:
 1. line `2`: set the project name according to the desired plugin Name. Notice that all the generated files and installation process will take that as the Plugin name. On installation, the dll will have <project_name>_x64.dll as a name.
 2. Lines `8`, `10`, `12`: change variables.
-3. line `30`: add .cpp / .h files you include for your library. *Do not include SDK files, they are automatically being built!*
+3. line `30`: add source files you include for your plugin. *Do not include SDK files, they are automatically being built!*
 4. line `38`: link other libraries if needed
 
 ## Compile the plugin
