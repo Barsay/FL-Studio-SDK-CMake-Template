@@ -25,6 +25,7 @@ int _stdcall Plugin::Dispatcher(int ID, int Index, int Value){
 };
 
 void _stdcall Plugin::Idle(){
+    int a;
     //todo
 };
 

@@ -1,4 +1,0 @@
-ToolSet: 15.0 (local)@C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools
-Options: msvc.arch=amd64
-
-Options:-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2022.2.1/bin/ninja/win/ninja.exe

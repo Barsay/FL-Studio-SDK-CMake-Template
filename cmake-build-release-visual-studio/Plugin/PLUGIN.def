@@ -1,8 +1,0 @@
-; This file Declares the module parameters for the DLL.
-
-LIBRARY      "PLUGIN"
-DESCRIPTION  'Describe your plugin here'
-
-EXPORTS
-    CreatePlugInstance
-
