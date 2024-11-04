@@ -1,4 +1,4 @@
-project(Saw_VC)
+project(Saw_VC_x64)
 
 add_library(${PROJECT_NAME} SHARED
         FruityPlug.cpp FruityPlug.def testplug.h testplug.cpp

@@ -1,0 +1,90 @@
+<html>
+<head>
+<title>Principles</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<p><font color="#CCCCCC">First</font> &nbsp;&nbsp;&nbsp;&nbsp;<font color="#CCCCCC">Previous</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="creating.html">Next</a> 
+</p>
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Principles</font></b></td>
+  </tr>
+</table>
+<p><br>
+  <b>What's in the sdk ?</b><br>
+  There are 3 core files in the sdk:<br>
+  FP_PlugClass (.pas / .h) contains the structure and class definitions, as well 
+  as the <a href="../constants.html">constants</a> required when creating Fruity 
+  plugins. <br>
+  FP_Def (.pas / .h) contains some types and constants that can be used in your 
+  plugins. <br>
+  FP_Extra (.pas/.h) has some extra type definitions, constants and functions<br>
+  <br>
+  There's also a helper class defined, that derives from TFruityPlug and defines 
+  some handy functions. This is TDelphiFruityPlug for Delphi (FP_DelphiClass.pas) 
+  and TCPPFruityPlug for C++ (FP_CPlug.h). It's best to derive your own plugin 
+  class from one of these (depending on the programming language you use). <br>
+  <br>
+  <br>
+  <b>The plugin class</b><br>
+  A plugin has to be implemented inside a class. The base class for this is TFruityPlug. 
+  <br>
+  <br>
+  <br>
+  <b>TFruityPlugInfo</b><br>
+  FL Studio gets its information about a plugin from the <a href="../fruitypluginfo.html">TFruityPlugInfo</a> 
+  structure. Therefore it's important to know how to fill this in. From this structure, 
+  FL Studio retrieves the type of the plugin, whether it supports an editor, what 
+  its unique name is and so on.<br>
+  <br>
+  FL Studio looks for the TFruityPlugInfo in the Info member of <a href="../fruityplug.html">TFruityPlug</a>. 
+  This is a pointer to a TFruityPlugInfo structure and it needs to be set by the 
+  plugin to point to a valid structure. In the examples this is done in the constructor 
+  of the plugin class. <br>
+  <br>
+  Be sure to always set SDKVersion to CurrentSDKVersion. The plugin name should 
+  be as unique as possible (see <a href="../guidelines.html">Guidelines</a>). 
+  Also don't forget to set NumParams to the number of parameters your plugin has.<br>
+  <br>
+  Flags is a bitfield (see <a href="../bitfields.html">Working with bitfields</a>). 
+  It contains any combination of <a href="../constants.html#_pluginflags">plugin 
+  flags</a>. It can contain a number of flags, some describing the type of plugin 
+  (see below). Most of the defined flags are not used yet. See the <a href="../constants.html#_pluginflags">plugin 
+  flag constants</a> for a complete list.<br>
+  <br>
+  <br>
+  <b>Plugin Types</b><br>
+  There are two main types of Fruity plugins : effects and generators.<br>
+  <br>
+  <i>Effects</i> receive audio data from FL Studio. They do something to this 
+  data (apply an effect) and give the resulting data back to FL Studio. You specify 
+  an effect plugin by leaving out <font color="#660000">FPF_Generator</font> from 
+  the Flags member of TFruityPlugInfo. Processing for an effect occurs in Eff_Render 
+  (see <a href="processing.html">Processing data</a>).<br>
+  <br>
+  <i>Generators</i> on the other hand do not receive audio data from FL Studio. 
+  They create entirely new data (generate) and send that to the host. To create 
+  a generator plugin, include <font color="#660000">FPF_Generator</font> in the 
+  Flags member of TFruityPlugInfo. Generators are divided into two more categories 
+  : full and hybrid generators. There are shortcut flags for creating full and 
+  hybrid generators. To make a full generator, you can use <font color="#660000">FPF_Type_FullGen</font>. 
+  For a hybrid generator, you would use <font color="#660000">FPF_Type_HybridGen</font> 
+  instead.<br>
+  <br>
+  Full generators create their audio data when Gen_Render is called (see <a href="processing.html">Processing 
+  data</a>). They are responsible for doing everything related to creating the 
+  audio data. So they might process their own envelope, for example. The big difference 
+  with a hybrid generator is that a full generator has to mix all the voices that 
+  were created itself, inside Gen_Render.<br>
+  <br>
+  Hybrid generators on the other hand implement the Voice_Render function to generate 
+  their audio (see <a href="voices.html">Working with voices</a>). A hybrid generator 
+  is created by including <font color="#660000">FPF_UseSampler</font> in the Flags 
+  member of TFruityPlugInfo. A hybrid generator has less work: it just needs to 
+  create a sound and FL Studio will take care of the rest. The hybrid generator 
+  doesn't need to mix its voices, it's just asked by FL Studio to render each 
+  voice separately in Voice_Render. </p>
+</body>
+</html>

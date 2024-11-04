@@ -1,0 +1,234 @@
+<html>
+<head>
+<title>Talking to the host</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<p><a href="principles.html">First</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href="messages.html">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#CCCCCC">Next</font> 
+</p>
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td height="27"><b><font size="5">Talking&nbsp;to&nbsp;the&nbsp;host</font></b></td>
+  </tr>
+</table>
+<p>The host is represented by an object, just as the plugin. This makes it possible 
+  to ask the host to do some things. See <a href="../fruityplughost.html">TFruityPlugHost</a> 
+  for more information.</p>
+<p><b>Members</b><br>
+  First of all, TFruityPlugHost has some member variables that can be useful to 
+  a plugin. Apart from the ones mentioned here, there are also MixingTick and 
+  Flags, but they're not used yet.<br>
+  <br>
+  <font color="#660000">HostVersion</font> holds the version of FL Studio. All 
+  the version number is included in one integer. So if the version number of FL 
+  Studio would be 1.2.3, HostVersion would have a value of 01002003. Certain features 
+  in the sdk require a minimum version of FL Studio to be installed.<br>
+  <br>
+  <font color="#660000">AppHandle</font> could be more important. It is the handle 
+  of the application that has loaded the plugin (so it's the handle of FL Studio). 
+  This could be needed for creating windows, depending on your development system.<br>
+  <br>
+  <font color="#660000">WaveTables</font> can be very handy, especially for generator 
+  plugins. It's an array of maximum ten pointers to an array of samples. They 
+  contain precalculated sine, triangle etc. waves. Each array has 16384 samples, 
+  in floating point format (-1.0 .. +1.0). So far, only 5 wavetables are defined. 
+  These are : sine (index = 0), triangle (index = 1), square (index = 2), saw 
+  (index = 3), analog saw (index = 4).<br>
+  <br>
+  <font color="#660000">TempBuffers</font> holds a few buffers that you can use 
+  when processing. They're guaranteed to hold at least Length samples (where Length 
+  is the value passed to Eff_Render, Gen_Render or Voice_Render). For hybrid generators, 
+  some of these buffers may be in use by FL Studio.</p>
+<p>&nbsp;</p>
+<p><b>Dispatcher</b><br>
+  This method sends a message to the host. You use the plugin's HostTag as the 
+  Sender parameter. Check <a href="..%5Cconstants.html#_hostdispatcherids">here</a> 
+  for a complete list of messages that you can send.<br>
+  <br>
+  First, there are two messages that are related to parameter popup menus. FL 
+  Studio fills the parameter popup menu for you, but you can also add items of 
+  your own if you want to. You don't necessarily have to provide a popup menu 
+  for this. Anything that allows the user to choose to edit the events or link 
+  to a midi controller or another of these options would do. But a popup menu 
+  is more in line with other plugins in FL Studio.<br>
+  <br>
+  First you use <font color="#660000">FHD_GetParamMenuEntry</font> to ask the 
+  host for popup menu items. The plugin then has to add these to its popup menu 
+  (or whatever it chooses). Note that TDelphiFruityPlugin and TCPPFruityPlugin 
+  have a function that can do this automatically, called AdjustParamPopup.<br>
+  <br>
+  <font color="#660000">FHD_ParamMenu</font> then informs the host that the user 
+  has clicked on a parameter popup menu item. The host then reacts to this the 
+  same as it does in other cases. Like this, uniformity within the program is 
+  maintained. This message has two parameters. The first is the index of the parameter 
+  and is passed in Index. The second is the index of the menu item that has been 
+  clicked, passed in Value. This last index is counted from 0, meaning the first 
+  item that was added after a call to FHD_GetParamMenyEntry. <br>
+  <br>
+  Note that the FL Studio popup menus also have a menu item called &quot;Reset&quot;. 
+  It would be best if you also implement such an item. Since the host has nothing 
+  to do with it, it won't be added by using FHD_GetParamMenuEntry.<br>
+  <br>
+  <font color="#660000">FHP_EditorResized</font> is the next host message. Call 
+  this when you have resized the plugin's editor window and you want to let the 
+  host know. <br>
+  <br>
+  Next is <font color="#660000">FHD_NoteNamesChanged</font>. It's all in the name. 
+  Call this when the name of a note was changed and FL Studio will call the GetName 
+  function to get the new name.<br>
+  <br>
+  <font color="#660000">FHD_ActivateMidi</font> is used to make the host enable 
+  it's midi output (which can be disabled in FL Studio).<br>
+  <br>
+  Call <font color="#660000">FHD_WantMIDIInput</font> when you want your plugin 
+  to receive midi messages, or to stop receiving them.<br>
+  <br>
+  <font color="#660000">FHD_WantMIDITick</font> means the plugin wants to receive 
+  midi tick messages.<br>
+  <br>
+  <font color="#660000">FHD_KillAutomation</font> is called when you want the 
+  host to get rid of all automation (parameter change) information that it's currently 
+  holding. You want to do this when that information is no longer accurate (for 
+  example the meaning of a parameter has changed) or to make a demo version (as 
+  a limitation).<br>
+  <br>
+  If your plugin has internal presets, you have to call Dispatcher with <font color="#660000">FHD_SetNumPresets</font> 
+  to let the host know how many presets there are. You can do this at any time 
+  (which means you can also change the number of presets).<br>
+  <br>
+  <font color="#660000">FHD_SetNewName</font> can be used to change the short 
+  name of the plugin while it's loaded. <br>
+  <br>
+  Call <font color="#660000">FHD_SelectChanSample</font> to get a selector for 
+  a parent channel sample.<br>
+  <br>
+  <font color="#660000">FHD_WantIdle</font> lets the host know whether or not 
+  the plugin wants the Idle method to be called by the host. By default this behaviour 
+  is on. If you don't do anything in Idle (including showing the parameter name 
+  when the mouse moves over a control), you can call this and in that way save 
+  a bit of cpu power.<br>
+  <br>
+  Use <font color="#660000">FHD_LocateDataFile</font> when you want to find the 
+  exact location for a certain file. You pass the filename without a path and 
+  FL Studio will search for it in all of its search paths.<br>
+  <br>
+  <font color="#660000">FHD_TicksToTime</font> asks the host to translate a tick 
+  time into a bar:step:tick time. <br>
+  <br>
+  With <font color="#660000">FHD_AddNotesToPR</font> a plugin can ask the host 
+  to add one or more notes to the piano roll for the plugin's channel.<br>
+  <br>
+  <font color="#660000">FHD_ShowMsg </font>allows you to ask FL Studio to show 
+  a message box with a certain text. This way the messagebox will look as the 
+  ones FL Studio shows itself.<br>
+  <br>
+  <font color="#660000">FHD_NoteOn</font> and <font color="#660000">FHD_NoteOff</font> 
+  allow the plugin to play a preview note on an internal piano keyboard (like 
+  the Fruity DX10 does). While the plugin doesn't really need to tell the host 
+  about this, it's better if it does (so the host can for example also show that 
+  note playing on its preview keyboard).<br>
+  <br>
+  <font color="#660000">FHD_OnHint_Direct</font> is the same as OnHint, but it 
+  shows the text immediately (to show a progress while you're doing something).<br>
+  <br>
+  <font color="#660000">FHD_SetNewColor</font> sets a new color for the parent. 
+  This color is used for the sample button in FL Studio's step sequencer.<br>
+  <br>
+  <font color="#660000">FHD_GetInstance</font> returns the module instance of 
+  the host. This could be an exe or a dll, so it might not be the process itself.<br>
+  <br>
+  Use <font color="#660000">FHD_KillIntCtrl</font> to ask the host to kill anything 
+  linked to an internal controller, for controllers between Index &amp; Value 
+  (included). This is used when getting rid of internal controllers. For example, 
+  Dashboard calls this when a control is deleted.<br>
+  <br>
+  Call <font color="#660000">FHD_SetNumParams</font> to override the number of 
+  parameters. This is useful for plugins that have a different set of parameters 
+  per instance. <br>
+  <br>
+  <font color="#660000">FHD_PackDataFile</font> asks the host to pack an absolute 
+  filename into a local filemane. When you pass the simple filename in Value the 
+  packed path is returned as Result. Note that the result pointer won't be valid 
+  for long, so you should copy the string right away!<br>
+  <br>
+  <font color="#660000">FHD_GetProgPath</font> asks the host where the FL Studio 
+  engine dll is, which might NOT be where the executable is, but where the data 
+  path will be. The value is returned as result of the function. Note that the 
+  result pointer won't be valid for long, so you should copy the string right 
+  away!<br>
+  <br>
+  <font color="#660000">FHD_SetLatency</font> sets the plugin latency, if any.<br>
+  <br>
+  Call <font color="#660000">FHD_CallDownloader</font> to show the preset downloader/selector. 
+  This is for use by some specific plugins only.<br>
+  <br>
+  <br>
+  <br>
+  <b>OnParamChanged</b><br>
+  In order to make your parameters recordable in FL Studio, you have to call this 
+  function whenever a parameter is changed from within your plugin (probably because 
+  the user turned a wheel or something). You need to pass HostTag in the Sender 
+  parameter. To let the host know which parameter has just been changed, pass 
+  the parameter index in Index. Finally, pass the new value (as an integer) in 
+  Value.<br>
+  <br>
+  <br>
+  <b>OnHint</b><br>
+  Fruity plugins can also show hints (or rather tell FL Studio to show a hint). 
+  Note that <a href="../delphifruityplug.html">TDelphiFruityPlug</a> and <a href="../cppfruityplug.html">TCPPFruityPlug</a> 
+  implement functions that make it a bit easier to show a hint. It's really a 
+  simple function. You pass HostTag for the Sender parameter. Text is a pointer 
+  to a string that contains the hint message. Note that the plugin is responsible 
+  for making sure that Text points to a valid string !<br>
+  <br>
+  There is one extra feature of parameter hints. It is possible to tell FL Studio 
+  to show little icons next to the hint, that have a special meaning. For the 
+  moment there are three of those. Note that these have to be inserted at the 
+  <i>BEGINNING</i> of the string.<br>
+  <br>
+  <font color="#660000">&quot;^a&quot;</font> shows a little icon that informs 
+  the user that the parameter that the hint is about can be linked to a MIDI controller.<br>
+  <font color="#660000">&quot;^b&quot;</font> informs the user that the parameter 
+  is recordable. <br>
+  <font color="#660000">&quot;^c&quot;</font> shows a little smiley. No real use, 
+  just for fun.<br>
+  <font color="#660000">&quot;^d&quot;</font> shows a mouse with the right button 
+  clicked, to denote a control that has a popup menu.<br>
+  <font color="#660000">&quot;^e&quot;</font> shows an unhappy smiley, to use 
+  when something went wrong.<br>
+  <font color="#660000">&quot;^f&quot;</font> shows a left-pointing arrow<br>
+  <font color="#660000">&quot;^g&quot;</font> shows a double right-pointing arrow, 
+  for fast forward<br>
+  <font color="#660000">&quot;^h&quot;</font> is an exclamation mark, for a warning 
+  to the user<br>
+  <font color="#660000">&quot;^i&quot;</font> is an hourglass<br>
+  <font color="#660000">&quot;^j&quot;</font> shows a double left-pointing arrow, 
+  for fast reverse<br>
+  <br>
+  So to show both the &quot;midi linkable&quot; and &quot;recordable&quot; icons, 
+  you might have a hint like this : &quot;^b^aThis is my hint&quot;. Note that 
+  in FL Studio the order is reversed (not ^a^b, but ^b^a). You might want to do 
+  this too in order to fit in better.<br>
+  <br>
+  <br>
+  <b>LockMix / UnlockMix</b><br>
+  These two functions work together. They are here to let you control the different 
+  threads within FL Studio in case they would get in your way. Working with threads 
+  is not a very easy subject and can cause many problems. <br>
+  <br>
+  FL Studio has a seperate thread for the mixer. So functions inside the plugin 
+  could be called from the main thread or from the mix thread. Multiple functions 
+  within your plugin could be executing at the same time! Therefore if you have 
+  to do something that could be disturbed by this, first call Lockmix. After this, 
+  you can do whatever it is you want to do. When you're done, <b>DON'T FORGET</b> 
+  to call UnlockMix. This let's the mixer thread go about its business again.<br>
+  <br>
+  It's also essential to implement as little code as possible between the calls 
+  to LockMix and UnlockMix. When the locking lasts too long a time, this will 
+  disrupt the playing in FL Studio, ranging from clicks to delays (zipper noise).</p>
+<p>Note that there are two other pairs of locking functions: <font color="#660000">LockPlugin</font>/<font color="#660000">UnlockPlugin</font> 
+  (won't freeze audio) and <font color="#660000">LockMix_Shared</font>/<font color="#660000">UnlockMix_Shared</font> 
+  (multithread-safe processing).</p>
+</body>
+</html>

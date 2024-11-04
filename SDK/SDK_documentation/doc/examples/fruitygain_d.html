@@ -1,0 +1,680 @@
+<html>
+<head>
+<title>FruityGain (Delphi)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<a name="_top"></a> 
+<p><b>FruityGain (Delphi)</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="fruitygain_c.html">FruityGain 
+  (C++)</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="osc3_d.html">Osc3 
+  (Delphi)</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="osc3_c.html">Osc3 
+  (C++)</a> <b></b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="sine_d.html">Sine 
+  (Delphi)</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="sine_c.html">Sine 
+  (C++)</a>&nbsp;</p>
+<table width="10" border="0" bgcolor="EEEEFF">
+  <tr>
+    <td><b><font size="5">FruityGain&nbsp;(Delphi)</font></b></td>
+  </tr>
+</table>
+<p><a href="#_gain">Gain.pas</a><br>
+  <a href="#_editor">Editor.pas</a><br>
+  <a href="#_fruitygain_d">FruityGain_D.pas</a></p>
+<p>&nbsp; </p>
+<p><a name="_gain"></a><b>Gain.pas</b><br>
+  This is the unit that contains the plugin class definition and implementation. 
+  <br>
+  <br>
+  First we have the uses section.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td><pre><font color="#3333FF">unit <br>&nbsp;&nbsp;&nbsp;&nbsp;Gain; <br>
+interface <br>  <br>uses <br>&nbsp;&nbsp;&nbsp; FP_Def, FP_PlugClass, FP_DelphiPlug, ActiveX, Forms, Editor;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Here we include the sdk units (FP_Def, FP_PlugClass and FP_DelphiPlug). We 
+  also include the ActiveX unit, as it defines the IStream interface which is 
+  used in SaveRestoreState. The last unit (Editor) contains the editor form (more 
+  about that later).<br>
+  <br>
+  Next we define some useful constants. This is not necessary, but it can make 
+  life a lot easier when you start changing these values. FruityGain has a seperate 
+  gain value for the left and right channels, so we have two parameters. There 
+  are also a minimum and maximum value defined.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td><pre><font color="#3333FF">const <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#9999FF">// the number of parameters</font><font color="#0000CC"> 
+</font>&nbsp;&nbsp;&nbsp;&nbsp; NumParams = 2; <br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#9999FF">// the parameter indexes</font> 
+&nbsp;&nbsp;&nbsp;&nbsp; prmGainLeft = 0; <br>&nbsp;&nbsp;&nbsp;&nbsp; prmGainRight = 1; <br>
+ &nbsp;&nbsp;&nbsp; <font color="#9999FF">// minimum and maximum values of the gain parameters</font> <br>&nbsp;&nbsp;&nbsp;&nbsp; GainMinimum = 0; <br>&nbsp;&nbsp;&nbsp;&nbsp; GainMaximum = 20; <br>
+<font color="#9999FF">// the information structure describing this plugin to the host</font> <br>var <br>&nbsp;&nbsp; PlugInfo : TFruityPlugInfo = ( <br>  &nbsp;&nbsp;&nbsp;SDKVersion : CurrentSDKVersion;<br>&nbsp;&nbsp;&nbsp;&nbsp; LongName : 'FruityGain_D'; <br> &nbsp;&nbsp;&nbsp; ShortName : 'F.Gain D'; <br>&nbsp;&nbsp;&nbsp;&nbsp; Flags : FPF_Type_Effect; <br>&nbsp;&nbsp;&nbsp;&nbsp; NumParams : NumParams; <br>&nbsp;&nbsp;&nbsp;&nbsp; DefPoly : 0 <font color="#9999FF">// infinite</font> <br>&nbsp;&nbsp;&nbsp;);</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Then we also declare a new variable of type TFruityPlugInfo. This record will 
+  be read by FL Studio later on to find out what kind of plugin this is. We 
+  set <b>SDKVersion</b> to the constant value CurrentSDKVersion, so FL Studio 
+  knows what we expect from it. <br>
+  We also set <b>LongName</b> to the name of the dll, without the .dll extension. 
+  The name of the dll should be as unique as possible. So simply 'Gain' would 
+  have been a bad name, whereas 'XFIGOEJSL' might be a good unique name, but probably 
+  not very nice to the user. You might use something like 'Ralfs Gain' for example 
+  as the name of your plugin, which would make it reasonably unique.<br>
+  <b>ShortName</b> can be anything you want, but it should also be as unique as 
+  possible. It also shouldn't be very long (as the name suggests).<br>
+  <b>Flags</b> actually defines what kind of plugin we're creating. We're making 
+  an effect plugin, so we use FPF_Type_Effect. There are some other flags you 
+  can use here too (see <a href="../constants.html#_pluginflags">Plugin Flag Constants</a>).<br>
+  We tell FL Studio how many parameters we have in <b>NumParams</b>. We also 
+  set <b>DefPoly</b> to 0, as we're creating an effect plugin.</p>
+<p>&nbsp; </p>
+<p> We're now ready to declare the plugin class. Note that we're deriving from 
+  TDelphiFruityPlug. This class implements some useful functions so it's not a 
+  bad idea to derive from this instead of TFruityPlug. For example, TDelphiFruityPlug 
+  implements DestroyObject in order to call Free, so you don't have to do this 
+  anymore. <br>
+  <br>
+  Here we first have some variables in which we store the parameter values. We 
+  have both integer and floating point variables for this. The integer variables 
+  are for communication with the editor controls (which use integers) and the 
+  floating point ones are for calculations in Eff_Render (so we don't have to 
+  calculate them every time Eff_Render is called).</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre> <font color="#3333FF">type <br>&nbsp;&nbsp;&nbsp;&nbsp; TFruityGain = class(TDelphiFruityPlug) 
+ &nbsp;&nbsp;&nbsp; public <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GainLeftInt : integer; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GainRightInt : integer; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GainLeft : single; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GainRight : single; <br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; constructor Create(Tag: integer);<br>   &nbsp;&nbsp;&nbsp; function Dispatcher(ID,Index,Value:Integer):Integer; override; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; procedure Idle; override; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; procedure SaveRestoreState(const Stream:IStream; Save:LongBool); override; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#9999FF"> // names (see FPN_Param) (Name must be at least 256 chars long)</font></font> <font color="#3333FF"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; procedure GetName(Section,Index,Value:Integer;Name:PChar); override; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#9999FF">// events function</font></font> <font color="#3333FF"><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProcessParam(Index,Value,RECFlags:Integer):Integer; override; <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#9999FF">// effect processing (source & dest can be the same)</font></font> <font color="#3333FF"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; procedure Eff_Render(SourceBuffer,DestBuffer:PWAV32FS;Length:Integer); override; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#9999FF"> // specific to this plugin</font></font> <font color="#3333FF"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; procedure GainIntToSingle; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; procedure ResetParams; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;</font></pre>
+      </td>
+  </tr>
+</table>
+<p>Then we define a constructor. This has one parameter, Tag, that is passed on 
+  from the host. We'll get back to this when we discuss the implementation of 
+  the constructor. We could also have overridden DestroyObject if we wanted to 
+  do something special when that is called by FL Studio. But since we derive 
+  from TDelphiFruityPlug, DestroyObject is already implemented to free the object, 
+  so we don't need to do that anymore.<br>
+  The rest of the functions defined will be discussed when we reach their implementation. 
+  Just a little note here that GainIntToSingle and ResetParams are helper functions 
+  for this specific plugin, so they probably won't be present in your own plugins.<br>
+  <br>
+  The last declaration in the interface section is CreatePlugInstance. This is 
+  a very important function. It is exported from the dll and called by FL Studio 
+  to create an instance of the class. Note that it's declared stdcall.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">function CreatePlugInstance(Host: TFruityPlugHost; Tag: Integer): TFruityPlug; stdcall;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>So we reach the implementation, with some more used units.<br>
+</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">implementation <br>   <br>uses <br>&nbsp;&nbsp;&nbsp;&nbsp;SysUtils, Controls, Windows;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We begin by implementing CreatePlugInstance. First we assign Host to the global 
+  variable PlugHost. This is necessary, as some functions in TDelphiFruityPlug 
+  expect it to be there. Then we create our plugin object and pass it back to 
+  FL Studio as the result of the function.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">function CreatePlugInstance(Host: TFruityPlugHost; Tag: Integer): TFruityPlug; 
+begin <br>&nbsp;&nbsp;PlugHost := Host; <br>&nbsp; Result := TFruityGain.Create(Tag); <br>end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Now we reach the implementation of the constructor. The first thing we do of 
+  course is call the inherited constructor. <br>
+  We also assign the address of the PlugInfo variable we declared earlier to the 
+  Info member of TFruityPlug. This way, FL Studio knows where to find it.<br>
+  Then we assign the Tag parameter (passed by CreatePlugInstance) to the HostTag 
+  member, so we can use it later on. </p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#9999FF">{ TFruityGain }</font><font color="#3333FF"> <br>constructor TFruityGain.Create(Tag: integer); 
+begin 
+  inherited Create; 
+
+  Info := @PlugInfo; 
+  HostTag := Tag; 
+
+  EditorForm := TEditorForm.Create(nil); 
+  with TEditorForm(EditorForm) do 
+  begin 
+    Plugin := Self; 
+    LeftGainTrack.Min := GainMinimum; 
+    LeftGainTrack.Max := GainMaximum; 
+    RightGainTrack.Min := GainMinimum; 
+    RightGainTrack.Max := GainMaximum; 
+  end; 
+
+  ResetParams; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We also create our editor form in the constructor. After we've done this, we 
+  set some of its variables (discussed later when we reach Editor.pas).<br>
+  Finally, we reset the parameter values. ResetParams is used for this, as resetting 
+  the parameters is done from several places.</p>
+<p>Next is Dispatcher. This function passes messages from FL Studio to the plugin. 
+  These are identified by the ID parameter (for a list of all values, see <a href="../constants.html#_dispatcherid">Dispatcher 
+  ID's</a>). The Index and Value parameters have different meanings, depending 
+  on the value of ID.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">function TFruityGain.Dispatcher(ID, Index, Value: Integer): Integer; 
+begin 
+  Result := 0; 
+
+  case ID of 
+    // show the editor 
+    FPD_ShowEditor: 
+      begin 
+        if Value = 0 then 
+        begin 
+          EditorForm.Hide; 
+          EditorForm.ParentWindow := 0; 
+        end 
+        else 
+        begin 
+          EditorForm.ParentWindow := Value; 
+          EditorForm.Show; 
+        end; 
+
+        EditorHandle := EditorForm.Handle; 
+      end; 
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Here we implement a reaction to the FPD_ShowEditor message. This tells us that 
+  FL Studio wants the editor form to be either hidden or shown, depending on 
+  the value of Value. Value holds the parent window we have to use to show our 
+  editor form. <br>
+  So if Value is zero, we hide the window, and then we set the parent window to 
+  zero. <br>
+  If Value is not zero, we assign it to ParentWindow for our editor, and then 
+  we show the editor. <br>
+  Note that the order of these things is important. If ParentWindow is zero while 
+  the editor form is already or still shown, the user will see it floating on 
+  the screen, which doesn't make a good impression.<br>
+  Finally we set TFruityPlug's EditorHandle member to the handle of our editor 
+  form. </p>
+<p> Eff_Render is the core of an effect plugin. It gets called continuously to 
+  process data while the plugin is active. <br>
+  Data is to be read from SourceBuffer, processed, and written to DestBuffer. 
+  These two parameters point to a buffer of interlaced samples. Interlaced means 
+  that the samples for the two channels (left and right) are mixed together. So 
+  first you get the first left sample, then the first right sample, then the second 
+  left sample and so on. <br>
+  Note that SourceBuffer and DestBuffer could point to the same buffer, so it 
+  might be worth checking for this to save some time.<br>
+  The PWAV32FS type makes it easy to work with these buffers, as shown in below.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TFruityGain.Eff_Render(SourceBuffer, DestBuffer: PWAV32FS; Length: Integer); 
+var 
+   left, right : single; 
+   i : integer; 
+begin 
+  left := GainLeft; 
+  right := GainRight; 
+
+  for i := 0 to Length-1 do 
+  begin 
+    DestBuffer^[i, 0] := SourceBuffer^[i, 0] * left; 
+    DestBuffer^[i, 1] := SourceBuffer^[i, 1] * right; 
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We first assign GainLeft and GainRight to some local variables, in case they 
+  change while we're processing.<br>
+  Then we run through the buffers, each time multiplying the channel's gain with 
+  the current sample. As you can see, Length specifies the number of samples in 
+  each channel, not the total amount of samples in the buffer.</p>
+<p>GainIntToSingle is a function specific to this plugin. It translates the integer 
+  parameter values (from the editor controls) to floating point values. What's 
+  important here is that we lock and unlock the mixing threads, to make sure that 
+  this doesn't happen from two threads at the same time, or that other functions 
+  that depend on these values are called from a different thread. It's probably 
+  a bit overkill in this example, but it shows how to do it.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TFruityGain.GainIntToSingle; 
+begin 
+  <font color="#9999FF">// for safety when we update the actual value, we lock the mixing thread</font> 
+  Lock; 
+  try 
+    GainLeft := (GainLeftInt / 4) + 1; 
+    GainRight := (GainRightInt / 4) + 1; 
+  finally 
+    Unlock; <font color="#9999FF">// and unlock it again when we're through (very important !)</font> 
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>Next is the implementation of GetName. This procedure is called by FL Studio 
+  when it wants a string representation of some value. What it wants translated 
+  is specified by the Section parameter (see <a href="../constants.html#_getname">GetName 
+  constants</a>). The meanings of Index and Value depend on the value of Section. 
+  Name points to a buffer that you have to put the translated string into. The 
+  memory for Name is assigned by FL Studio, so you don't need to worry about 
+  this. There's room for at least 256 characters in Name.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">procedure TFruityGain.GetName(Section, Index, Value: Integer; Name: PChar);
+var
+   tempsingle : single;
+begin
+  if Section = FPN_Param then
+  begin
+    case Index of
+      prmGainLeft  :  StrPCopy(Name, 'Left Gain');
+      prmGainRight :  StrPCopy(Name, 'Right Gain');
+    end;
+  end
+  else if Section = FPN_ParamValue then
+  begin
+    tempsingle := (Value / 4) + 1;
+    StrPCopy(Name, Format('%.2fx', [tempsingle]));
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+  <tr bordercolor="#FFFFFF">
+  </tr>
+</table>
+<p>We check for two Section values here : FPN_Param (a parameter name is required) 
+  and FPN_ParamValue (a parameter value is to be translated). In both cases, Index 
+  tells us what parameter FL Studio is talking about. In the case of FPN_ParamValue, 
+  Value holds the value to be translated. Don't use your own internal values for 
+  this, since it's not always the current value that has to be translated.</p>
+<p>Next is the Idle procedure. You can use this to perform some action when the 
+  user isn't doing anything. In this example, we do something very nice which 
+  you might want to implement in your own plugins as well. We check whether the 
+  mouse is over a control (on our editor form of course) and tell FL Studio 
+  to show a hint message.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TFruityGain.Idle; 
+var 
+   Control : TControl; 
+   P : TPoint; 
+begin 
+  if (GetCaptureControl <> nil) then 
+    Exit; 
+
+  GetCursorPos(P); 
+  Control := FindDragTarget(P, true); 
+  if (Control <> nil) then 
+  begin 
+    if AppHint <> Control.Hint then 
+    begin 
+      AppHint := Control.Hint; 
+      PlugHost.OnHint(HostTag, PChar(AppHint)); 
+    end; 
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>It's important to know here that we assigned values to the Hint properties 
+  of all controls on the editor form. We use the global AppHint variable to check 
+  if the hint is already being shown or not. If not, we call OnHint on the host 
+  object (saved in CreatePlugInstance) to let FL Studio show a hint in its own 
+  way. </p>
+<p>Now we come to the ProcessParam function. This is a bit complicated, so I'll 
+  split it up into several parts.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">function TFruityGain.ProcessParam(Index, Value, RECFlags: Integer): Integer; 
+begin 
+  if Index < NumParams then with TEditorForm(EditorForm) do 
+  begin 
+    if RECFlags and REC_FromMIDI <> 0 then 
+      Value := TranslateMIDI(Value, GainMinimum, GainMaximum); </font></pre>
+    </td>
+  </tr>
+</table>
+<p>First we check whether Index actually identifies a valid parameter. <br>
+  Then we start checking the flags present in RECFlags. The order in which we 
+  check these is important. We start by checking for REC_FromMIDI. This means 
+  that Value holds a value between 0 and 65536, that needs to be translated to 
+  the range for our parameter. How this happens depends on the minimum and maximum 
+  values of the individual parameters. Since our parameters have the same minimum 
+  and maximum, we don't need to check Index. TDelphiFruityPlug provides the function 
+  TranslateMIDI, so you don't need to implement this yourself. <br>
+  <br>
+  Next we check whether we need to change the value of a parameter to a new value 
+  or return a parameter value to FL Studio.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">    if RECFlags and REC_UpdateValue <> 0 then 
+    begin 
+      case Index of 
+        prmGainLeft  : GainLeftInt := Value; 
+        prmGainRight : GainRightInt := Value; 
+      end; 
+      GainIntToSingle; 
+    end </font></pre>
+    </td>
+  </tr>
+</table>
+<p>If RECFlags includes REC_UpdateValue, we need to change a parameter's value. 
+  So we check Index to see which parameter we have to change and set the value. 
+  In this example, GainIntToSingle is called to also set the floating point values.<br>
+  Note that we're not changing the controls on the editor form yet. That's for 
+  a bit later.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">    else if RECFlags and REC_GetValue <> 0 then 
+      case Index of 
+        prmGainLeft  : Value := GainLeftInt; 
+        prmGainRight : Value := GainRightInt; 
+      end; </font></pre>
+    </td>
+  </tr>
+</table>
+<p>If REC_GetValue is in RECFlags, FL Studio expects us to return the value 
+  of a parameter as the result of the function. This flag cannot be present when 
+  REC_UpdateValue is present, so we use an if .. then .. else construct. We look 
+  at Index to know which parameter FL Studio is talking about and change Value 
+  to the integer value of the parameter.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">    if RECFlags and REC_UpdateControl <> 0 then 
+      ParamsToControls; 
+  end; 
+
+  Result := Value; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>The final check we make is for REC_UpdateControl. When this is not present, 
+  don't update the editor form's controls ! We call ParamsToControls, which is 
+  a function of our TEditorForm class (see below when we discuss Editor.pas). 
+  This updates all parameters, but since we only have two, this isn't too bad. 
+  If you have a lot of controls to update, it would be better to just update the 
+  parameter identified by Index.<br>
+  <br>
+  At the end of the function, we assign Value to Result. It's safe to always do 
+  this, regardless of whether or not REC_GetValue is present in RECFlags.</p>
+<p>Time to move on to the next function.</p>
+<table width="95%" border="1" bordercolor="#0000FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TFruityGain.ResetParams; 
+begin 
+  <font color="#9999FF">// start with a gain of 1.5 of both channels</font> 
+  GainLeftInt := 2; 
+  GainRightInt := 2; 
+
+  GainIntToSingle; <font color="#9999FF">// translate the int gain to floating point value</font> 
+  TEditorForm(EditorForm).ParamsToControls; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>ResetParams is an internal function to reset the parameters to their default 
+  values. Here, we also call GainIntToSingle to set the floating point variables 
+  and ParamsToControls to update the editor's controls.</p>
+<p>Then comes SaveRestoreState. This function allows the plugin to write its state 
+  to and read it from a stream, which could be a file, or memory, or whatever. 
+  The Save parameter tells us whether FL Studio expects the plugin to save or 
+  restore.<br>
+  The Stream parameter is of type IStream. You can use this just like any object. 
+  There are several functions available in IStream, but the most important are 
+  Write and Read. One thing to watch out for, is that you have to read the exact 
+  same amount of data from the stream as was written to this. For simple plugins, 
+  you can do this simply by reading and writing the same data. For more complex 
+  plugins, it might be necessary to first write the amount of data you're going 
+  to write, or some sort of version number, so that you never make a mistake.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TFruityGain.SaveRestoreState(const Stream: IStream; Save: LongBool); 
+var 
+   templong : longint; 
+   written  : longint; 
+   read     : longint; 
+begin 
+  if Save then 
+  begin 
+    templong := GainLeftInt; 
+    Stream.Write(@templong, sizeof(longint), @written); 
+    templong := GainRightInt; 
+    Stream.Write(@templong, sizeof(longint), @written); 
+  end 
+  else 
+  begin 
+    Stream.Read(@templong, sizeof(longint), @read); 
+    GainLeftInt := templong; 
+    Stream.Read(@templong, sizeof(longint), @read); 
+    GainRightInt := templong; 
+    GainIntToSingle; 
+    ProcessAllParams; 
+  end; 
+end; 
+
+end.</font></pre>
+    </td>
+  </tr>
+</table>
+<p>First we check Save, so we know what to do. IStream.Write and IStream.Read 
+  work similarly. The first parameter is a pointer to the data to write away. 
+  Here, we use a temporary variable (templong) and pass its address using the 
+  @ operator. The second parameter is the size of the data to be written, which 
+  we find by using SizeOf. The last parameter is a pointer to a longint. In the 
+  case of Write, this will hold the number of bytes which were actually written 
+  to the stream. In the case of Read, this will hold the number of bytes actually 
+  read from the stream. After reading, we also update the parameters and controls 
+  by calling GainIntToSingle and ProcessAllParams.</p>
+<p>And so we reach the end of the Gain.pas unit.</p>
+<p><a href="#_top">Top</a></p>
+<p>&nbsp;</p>
+<p><a name="_editor"></a><b>Editor.pas</b><br>
+  This unit contains our editor form. <br>
+  Make sure you set the BorderStyle property of your editor form to bsNone, as 
+  the editor form will be placed inside another window. <br>
+  There are two controls : LeftGainTrack and RightGainTrack, both trackbars, which 
+  represent the parameters. There's also a popupmenu.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">unit Editor; 
+
+interface 
+
+uses Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ComCtrls, 
+     StdCtrls, FP_PlugClass, Menus; 
+
+type 
+    TEditorForm = class(TForm)
+      <font color="#9999FF">... // managed by Delphi</font>
+    public 
+      Plugin: TFruityPlug; 
+      procedure ControlsToParams(left: boolean); 
+      procedure ParamsToControls; 
+    end; </font></pre>
+    </td>
+  </tr>
+  <tr bordercolor="#FFFFFF">
+  </tr>
+</table>
+<p>We add a variable called Plugin to the form class, to be able to communicate 
+  with the plugin about parameter changes. The we define two functions. ControlsToParams 
+  gets called to set a parameter after a control has changed. ParamsToControls 
+  sets the control values after the parameters have changed.</p>
+<p>The first function to discuss is ControlsToParams.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">implementation 
+
+</font><font color="#3333FF">uses 
+    Gain; 
+
+{$R *.DFM}
+
+{ TEditorForm }
+
+procedure TEditorForm.ControlsToParams(left: boolean); 
+begin 
+  with TFruityGain(Plugin) do 
+  begin 
+    if left then 
+    begin 
+      GainLeftInt := LeftGainTrack.Position; 
+      PlugHost.OnParamChanged(HostTag, prmGainLeft, GainLeftInt); 
+    end 
+    else 
+    begin 
+      GainRightInt := RightGainTrack.Position; 
+      PlugHost.OnParamChanged(HostTag, prmGainRight, GainRightInt); 
+    end; 
+    GainIntToSingle; 
+  end; 
+end;</font></pre>
+      </td>
+  </tr>
+</table>
+<p>We set the plugin's parameters, depending on which changed, to the new value. 
+  Then we call PlugHost.OnParamChanged, to let FL Studio know there's been a 
+  change. Finally, we call GainIntToSingle on the plugin to also set the floating 
+  point parameter values. </p>
+<p>ParamsToControls gets called by the plugin when it's parameter values have 
+  changed and the controls have to be updated. This allows the plugin to know 
+  nothing of what kind of controls are used to represent the parameters.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TEditorForm.ParamsToControls; 
+begin 
+  with TFruityGain(Plugin) do 
+  begin 
+    LeftGainTrack.Position := GainLeftInt; 
+    RightGainTrack.Position := GainRightInt; 
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>GainTrackChange is the event handler for LeftGainTrack.OnChange and RightGainTrack.OnChange.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TEditorForm.GainTrackChange(Sender: TObject); 
+var 
+   C: TControl; 
+   s: string; 
+begin 
+  C := TControl(Sender); 
+  ControlsToParams(C.Tag = 0); 
+
+  with TFruityGain(Plugin) do 
+  begin 
+    if C.Tag = 0 then 
+      s := Format('%.2fx', [GainLeft]) 
+    else 
+      s := Format('%.2fx', [GainRight]); 
+    ShowHintMsg(PChar(s)); 
+  end; 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We do two things here. First, we call ControlsToParams to change the plugin 
+  parameter variables. C.Tag is 0 for LeftGainTrack and 1 for RightGainTrack. 
+  <br>
+  The second thing we do is let FL Studio show a hint. Depending on the parameter 
+  index (left gain = 0, right gain = 1), we format a string with the right parameter 
+  value. Then we call ShowHintMsg, a method defined in TDelphiFruityPlug to tell 
+  FL Studio what to do.</p>
+<p>Next, PopupClick. This is the event handler for most items of the Popup popupmenu 
+  (all except the Reset item and the breaks). Take a look at this popupmenu in 
+  Delphi. The items (except Reset and the breaks) all have special values for 
+  Tag. These correspond to the <a href="../constants.html#_parampopupindexes">Parameter 
+  Popup Menu Indexes</a>. InPopupClick, we tell FL Studio to perform a certain 
+  action (show the event editor, for example).</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TEditorForm.PopupClick(Sender: TObject); 
+var 
+   Comp : TComponent; 
+   Menu : TMenuItem; 
+begin 
+  Menu := TMenuItem(Sender); 
+  Comp := TPopupMenu(Menu.Parent.Owner).PopupComponent; 
+  PlugHost.Dispatcher(Plugin.HostTag, FHD_ParamMenu, Comp.Tag, Menu.Tag); 
+end;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>We retrieve the component that the popupmenu was show over from the PopupComponent 
+  property. Then we call the Dispatcher on PlugHost with the dispatcher flag (FHD_ParamMenu), 
+  the parameter indes (Comp.Tag) and the menu item index (Menu.Tag).</p>
+<p>mnuResetClick is the event handler for the Reset item of the Popup popupmenu. 
+  We simply call ResetParams on the plugin object.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">procedure TEditorForm.mnuResetClick(Sender: TObject); 
+begin 
+  TFruityGain(Plugin).ResetParams; 
+end; 
+
+end.</font></pre>
+    </td>
+  </tr>
+</table>
+<p><a href="#_top">Top</a></p>
+<p>&nbsp;</p>
+<p><a name="_fruitygain_d"></a><b>FruityGain_D.dpr</b><br>
+  This is the project file. It's important to us here for one thing : exporting 
+  CreatePlugInstance. Don't forget to do this, as otherwise your plugin won't 
+  be loaded by FL Studio.</p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">library FruityGain_D; <br>
+<font color="#9999FF">...  // all sorts of unimportant stuff</font><br>
+exports 
+       CreatePlugInstance;
+
+begin 
+end.</font></pre>
+    </td>
+  </tr>
+</table>
+<p><a href="#_top">Top</a></p>
+<p>&nbsp; </p>
+</body>
+</html>

@@ -17,7 +17,7 @@ set(PLUGIN_DESCRIPTION "Describe your plugin here")
 #set(PLUGIN_TESTING_ENABLED FALSE)
 
 #------FILE SETTINGS------#
-#This section contains semi-automatic file generation settings.
+#This section contains automatic file generation settings.
 #Notice: the configured files are in the build folder.
 configure_file(utils/definitions.h.in definitions.h @ONLY)
 configure_file(utils/plugin.def.in ${PROJECT_NAME}.def)

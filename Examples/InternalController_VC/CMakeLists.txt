@@ -1,4 +1,4 @@
-project(InternalController_VC)
+project(InternalController_VC_x64)
 
 add_library(${PROJECT_NAME} SHARED
         FruityPlug.cpp FruityPlug.def FruityPlug.h

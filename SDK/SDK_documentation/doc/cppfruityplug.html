@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>TCPPFruityPlug</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">TCPPFruityPlug</font></b></td>
+  </tr>
+</table>
+<p>[C++ only]</p>
+<p><b>Declared in :</b> FP_CPlug.h</p>
+<p>This class is derived from <a href="fruityplug.html">TFruityPlug</a> and adds 
+  some helper functions. It's not necessary to derive from this class if you want 
+  to create a plugin.</p>
+<p><a href="#_methods">Methods</a><br>
+  <a href="#_members">Members</a></p>
+<p><a name="_methods"></a><b>Methods</b></p>
+<table width="100%" border="0">
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">GetStep_Cents</td>
+    <td>(internal)<br> <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Pitch</b> 
+      (int)<br> <i>Result</i> (int)</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">GetStep_Freq</td>
+    <td>(internal)<br> <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Freq</b> 
+      (int)<br> <i>Result</i> (integer)</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">ProcessAllParams</td>
+    <td>(internal) Calls ProcessParam for all parameters<br> <i>Parameters</i> 
+      : none<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">SkipRendering</td>
+    <td>(internal)<br> <i>Parameters</i> : <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SourceBuffer</b> 
+      (void *)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DestBuffer</b> 
+      (void *)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Length</b> 
+      (int)<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td width="17%">ShowHintMsg</td>
+    <td bgcolor="DDDDEE">Let the host show a hint to the user<br> <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Msg</b> 
+      (char *) : The hint to show. Add &quot;^a&quot; (parameter can be linked 
+      to a midi controller) and &quot;^b&quot; (parameter is recordable) to the 
+      <i>beginning</i> of the hint to have FL Studio show little icons<br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td bgcolor="#CCCCDD">ShowHintMsg_Direct</td>
+    <td>Show a hint to the user. Unlike ShowHintMsg, this function shows it without 
+      any delay. Useful for progress indicators.<br> <i>Parameters</i> :<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Msg</b> (char *) : The 
+      hint to show. Add &quot;^a&quot; (parameter can be linked to a midi controller) 
+      and &quot;^b&quot; (parameter is recordable) to the <i>beginning</i> of 
+      the hint to have FL Studio show little icons<br> <i>Result</i> 
+      : none </td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">ShowHintMsg_Percent</td>
+    <td>Shows a hint for a value in percentage<br>
+      <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Value</b> 
+      (int) : The value to be shown as a percentage<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Max</b> 
+      (int) : The maximum for the value (the value is counted from 0..Max)<br> 
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">ShowHintMsg_Pitch</td>
+    <td>Show a hint for a value in terms of pitch<br> <i>Parameters</i> :<br> 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Value</b> (int) : The 
+      value to be shown in terms of pitch<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>PitchType</b> 
+      (int) : ?<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">AdjustParamPopup<br>
+      (VCL version)</td>
+    <td>Adds menu items that FL Studio tells it about to the specified menu item. 
+      Note that clicks for these menu items are handled by TCPPFruityPlug, so 
+      you don't need to worry about them.<br> <i>Parameters</i> : <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Item</b> 
+      (TMenuItem *) : The menu item to set the state of<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ParamNum</b> 
+      (int) : The index of the parameter<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ItemIndex</b> 
+      (int) : The index of the menu item (see <a href="constants.html#_parampopupindexes">Parameter 
+      Popup Menu Item Indexes</a>)<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">AdjustParamPopup<br>
+      (Windows API version)</td>
+    <td>Adds menu items that FL Studio tells it about to the specified menu item.<br> <i>Parameters</i> : <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Item</b> 
+      (HMENU) : The menu item to set the state of<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ParamNum</b> 
+      (int) : The index of the parameter<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ItemIndex</b> 
+      (int) : The index of the menu item (see <a href="constants.html#_parampopupindexes">Parameter 
+      Popup Menu Item Indexes</a>)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>FirstID</b> 
+      (int) : The command id of the first menu item that this function adds. The 
+      next menu item's id will be FirstID+1 and so on. You'll need this to respond 
+      to a click from the user. See the VC++ examples to see how it's done.<br> 
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">Lock</td>
+    <td>Lock the critical section in order to change something that could be accessed 
+      by multiple threads<br> <i>Parameters</i> : none<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Unlock</td>
+    <td>Unlock the critical section<br> <i>Parameters</i> : none<br> <i>Result</i> 
+      : none </td>
+  </tr>
+</table>
+<p><a name="_members"></a><b>Members</b></p>
+<table width="100%" border="0">
+  <tr valign="top" bgcolor="#CCCCDD"> 
+    <td width="17%">PlugHost</td>
+    <td>(TFruityPlugHost *) This object is used by the plugin to talk to the host 
+      application </td>
+  </tr>
+  <tr valign="top" bgcolor="DDDDEE"> 
+    <td bgcolor="DDDDEE" width="17%">SmpRate</td>
+    <td>(integer) The current sample rate</td>
+  </tr>
+  <tr valign="top" bgcolor="#CCCCDD"> 
+    <td width="17%" bgcolor="#CCCCDD">PitchMul</td>
+    <td>(single) </td>
+  </tr>
+  <tr valign="top" bgcolor="#DDDDEE"> 
+    <td>ProgPath</td>
+    <td><font color="#660000" size="-1">(FL 7.0)</font> (char *) Will hold the 
+      path where FL Studio is installed</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

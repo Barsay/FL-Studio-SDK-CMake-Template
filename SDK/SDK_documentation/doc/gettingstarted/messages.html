@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>Messages from the host</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<p><a href="principles.html">First</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href="parameters.html">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="host.html">Next</a> 
+</p>
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Messages&nbsp;from&nbsp;the&nbsp;host</font></b></td>
+  </tr>
+</table>
+<p>There are four ways the host will inform the plugin of something it has to 
+  do or something that has happened. These are Dispatcher, Idle, ProcessEvent 
+  and Voice_ProcessEvent. The last one is discussed on the page <a href="voices.html">Working 
+  with voices</a>.</p>
+<p><b>Dispatcher</b><br>
+  Depending on ID, the plugin needs to do something. ID can be one of the <a href="../constants.html#_dispatcherid">Dispatcher 
+  IDs</a>.<br>
+  <br>
+  When ID is <font color="#660000">FPD_ShowEditor</font>, the plugin has to either 
+  show or hide its editor window. If Value is zero, the editor has to be hidden. 
+  Otherwise, the editor has to be shown. In this case, Value is the handle of 
+  the parent window, so don't forget to set the parent handle of your window to 
+  it. It's best to first set the parent handle and only then show the window. 
+  Likewise, hide the editor before you set its parent handle to zero. <br>
+  In case the editor has to be hidden, the examples set the parent handle of the 
+  editor window to zero. Some development systems (such as Delphi 3) might not 
+  like this. In this case, it might be a good idea to save the original value 
+  of the parent handle and restore that when the editor is hidden.<br>
+  <br>
+  If ID is <font color="#660000">FPD_ProcessMode</font>, then Value holds the 
+  new processing mode. This ID can be ignored. It's a bitfield that determines 
+  the quality of the data that the plugin renders. If the PM_IsRendering flag 
+  is set, the host is rendering to a file (.wav, .mp3, ...), which means that 
+  the plugin doesn't have to render in real time. You can also check against the 
+  PM_IPMask bit mask. This determines the interpolation quality to be used.<br>
+  <br>
+  <font color="#660000">FPD_Flush</font> warns the plugin that the next samples 
+  do not follow immediately in time to the previous block of samples. In other 
+  words, the continuity is broken. You have to make sure that your plugin responds 
+  well to a change in continuity. For example, a delay plugin will have to make 
+  sure it doesn't use any more old data. The idea is not that you go setting all 
+  buffers to zero. It might be enough to set a position variable. This should 
+  all be as optimized as possible.<br>
+  <br>
+  As the name suggests, <font color="#660000">FPD_SetBlockSize</font> tells the 
+  plugin that the maximum block size has changed. This is not relevant to all 
+  plugins. Value holds the new maximum blocksize.<br>
+  <br>
+  <font color="#660000">FPD_SetSampleRate</font> tells the plugin that the sample 
+  rate has been changed. If you're making a plugin that is affected by this, look 
+  in Value for the new samplerate.<br>
+  <br>
+  <font color="#660000">FPD_WindowMinMax</font> is sent when the host wants information 
+  about the resizing of the plugin's editor window. There are two things it wants 
+  to know : the minimum and maximum sizes of the window, and the changes in size 
+  when the user drags the borders of the window. <br>
+  Index holds a pointer to a rectangle (TRect / RECT). In this rectangle, you 
+  need to specify the minimum and maximum sizes of the editor. For the minimum 
+  size, use the Left (width) and Top (height) fields. For the maximum size, use 
+  the Right (width) and Bottom (height) fields.<br>
+  Value holds a pointer to a point structure (TPoint / POINT). In this structure 
+  you can specify special values for the steps in resizing the window. <br>
+  If you don't want the window to be resizeable, then don't respond to this message.<br>
+  <br>
+  FL Studio will call dispatcher with <font color="#660000">FPD_KillAVoice</font> 
+  when for some reason it thinks the weakest voice should be killed. Maybe the 
+  plugin was using too much cpu. Whatever the reason, the plugin should look for 
+  the currently active voice that has the lowest volume (on average) and kill 
+  it. If it does this, it should return 1 as the functions result.<br>
+  <font color="#660000"><br>
+  FPD_UseVoiceLevels</font> is sent to determine whether or not a full generator 
+  will use the CutOff and Resonance per-voice parameters as they are, use them 
+  as different (custom) parameters, or not use them at all. In the second case, 
+  the plugin will need to implement a response for GetName when it's called with 
+  the section FPN_VoiceLevel, so it can provide names for the custom parameters.<br>
+  <font color="#660000"><br>
+  FPD_SetPreset</font> is called when the user selects an internal preset. <br>
+  <font color="#660000"><br>
+  FPD_ChanSampleChanged</font> lets you know that a sample has been loaded into 
+  a generator's channel, and now provided to the plugin as a wavetable. This will 
+  only be called for a plugin that has specified FPF_GetChanSample as a flag in 
+  its info structure. <br>
+  <font color="#660000"><br>
+  FPD_SetEnabled</font> is called when the plugin is either enabled or disabled 
+  by the user.<br>
+  <font color="#660000"><br>
+  FPD_SetPlaying</font> informs the plugin that FL Studio has either started or 
+  stopped playing. <br>
+  <font color="#660000"><br>
+  FPD_SongPosChanged</font> lets the plugin know that the song position has jumped 
+  from one position to another new one, either before or after the previous position. 
+  The new position is never just one further than the old position.<br>
+  <font color="#660000"> <br>
+  FPD_SetTimeSig</font> is called when the time signature has changed. Check out 
+  the <a href="../types.html">time signature structure</a> for more information.<font color="#660000"><br>
+  <br>
+  FPD_CollectFile</font> is used by the host to find out if a plugin has any additional 
+  files it would like to see saved, for example when FL Studio exports a project 
+  to a zip file. The host keeps calling this until 0 is returned. As long as the 
+  plugin has files to save (indicated by the Index parameter), it should pass 
+  a pchar / char *, containing the name of the file to be saved, as the result 
+  of the function.<br>
+  <font color="#660000"><br>
+  FPD_SetNumSends</font> lets you know how many send tracks there are. This is 
+  a fixed number for the time being, but it could be variable in the future.<font color="#660000"><br>
+  <br>
+  FPD_LoadFile</font> is called when a file (not a sound file) is dropped onto 
+  a channel's button. The plugin can then load this file if it wants to.The Value 
+  parameter should be typecast to a pchar / char * variable and holds the name 
+  of the file that was dropped.<br>
+  <br>
+  <font color="#660000">FPD_SetFitTime</font> sets fit to a time in beats.<br>
+  <br>
+  <font color="#660000">FPD_SetSamplesPerTick</font> lets you know how many samples 
+  there are in a &quot;tick&quot; (the basic period of time in FL Studio). This 
+  changes when the tempo, PPQ or sample rate have changed. This can be called 
+  from the mixing thread.<br>
+  <br>
+  <font color="#660000">FPD_SetIdleTime</font> passes the interval at which the 
+  Idle function will be called, in milliseconds. You can use this to adjust things 
+  like the speed of an animation.</p>
+<p>See the <a href="../constants.html">Constants</a> page for a complete list 
+  of dispatcher codes.<br>
+  <br>
+  <br>
+  <b>Idle</b><br>
+  This function is called continuously. It allows the plugin to perform certain 
+  tasks that are not time-critical and which do not take up a lot of time either. 
+  For example, TDelphiFruityPlug and TCPPFruityPlug implement this function to 
+  show a hint message when the mouse moves over a control in the editor.<br>
+  <br>
+  <br>
+  <b>ProcessEvent</b><br>
+  This is called by the host for special events. <br>
+  <br>
+  <font color="#660000">FPE_Tempo</font> means that the tempo has changed. Value 
+  holds the new tempo. The tempo is a floating point (single / float), so it needs 
+  to be typecast from the integer Value, like this :<br>
+  <i><font color="#CC0000">&nbsp;&nbsp;&nbsp;&nbsp;Delphi :</font></i> &nbsp;NewTempo 
+  := single(Value);<br>
+  <font color="#CC0000"><i>&nbsp;&nbsp;&nbsp;&nbsp;C++ :</i></font> &nbsp;NewTempo 
+  = *((float *)&Value);<br>
+  <br>
+  <font color="#660000">FPE_MaxPoly</font> is only of intrest to full generators. 
+  It tells them that the maximum polyphony (the maximum number of voices playing 
+  at once) has been changed. A value of zero (0) means unlimited polyphony.<br>
+  <br>
+  <font color="#660000">FPE_MIDI_Pan</font> let's the plugin know that the midi 
+  pan has changed.<br>
+  <br>
+  <font color="#660000">FPE_MIDI_Vol</font> informs you that the midi volume has 
+  changed.<br>
+  <br>
+  <font color="#660000">FPE_MIDI_Pitch</font> is used when the midi pitch has 
+  changed.</p>
+<p>See the <a href="../constants.html">Constants</a> page for a complete list 
+  of event codes.</p>
+</body>
+</html>

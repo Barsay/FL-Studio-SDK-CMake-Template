@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Working with voices</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<p><a href="principles.html">First</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href="creating.html">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="processing.html">Next</a> 
+</p>
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td height="27"><b><font size="5">Working&nbsp;with&nbsp;voices</font></b></td>
+  </tr>
+</table>
+<p>If you're going to make a generator plugin, you need to know about the voice 
+  functions. <br>
+  <br>
+  FL Studio uses the <a href="../levelparams.html#_voiceparams">TVoiceParams</a> 
+  structure to tell the plugin the settings for a certain voice. This consists 
+  of two fields, InitLevels and FinalLevels, both of type <a href="../levelparams.html">TLevelParams</a>. 
+  It holds information about the channel panning, volume, pitch and filter cutoff 
+  and Q. Note that the Q value (FRes) has a range of 0 to 80/128. That means that 
+  each value for FRes is an integer value between 0 and 80, but that needs to 
+  be divided by 128 before it's assigned to FRes.</p>
+<table width="95%" border="1" align="center" cellpadding="4" bordercolor="#FFFFFF">
+  <tr>
+    <td bordercolor="#333333"><div align="justify"><font color="#990000" size="-1">NOTE: 
+        </font><font size="-1">In version 1.4 of the sdk, TLevelParams has been 
+        changed to have floating point fields for Pan and Pitch. The old version 
+        of TLevelParams has been renamed to TLevelParams_Old. Always use the new 
+        version for new plugins. For old projects, you can leave the FPF_NewVoiceParams 
+        out of the plugin flags (it's in the combo's by default). </font></div></td>
+  </tr>
+</table>
+<div align="center"></div>
+<p>There are four functions in <a href="../fruityplug.html">TFruityPlug</a> that 
+  deal with managing voices. These are TriggerVoice, Voice_Release, Voice_Kill 
+  and Voice_ProcessEvent. <br>
+  <br>
+  <br>
+  <b>TriggerVoice</b><br>
+  This is the first voice function that will get called by FL Studio. The plugin 
+  has to create a new voice (allocate memory) when this is called. FL Studio provides 
+  a pointer to a TVoiceParams structure. You have to keep this structure around 
+  for future reference.<br>
+  <br>
+  The result of this function is going to be used in the other functions as the 
+  identifier of the voice. It's the plugin's task to choose a unique identifier. 
+  An easy way of doing this is to create a structure to hold (private) information 
+  about the voice, which also holds the pointer to the TVoiceParams structure. 
+  Then you can use a pointer to your own structure as the result of TriggerVoice, 
+  as the pointer should be unique within a process. You can take a look at the 
+  implementation of TriggerVoice in the Osc3 example for this.<br>
+  <br>
+  Don't forget to save the SetTag parameter. It's needed when you want to call 
+  voice functions in the host class (see <a href="../fruityplughost.html">TFruityPlugHost</a>).</p>
+<p>Check out the voice information codes to retrieve any relevant info about the 
+  newly triggered voice. These include <font color="#660000">FPV_GetLength</font>,<font color="#660000"> 
+  FPV_GetColor</font>, <font color="#660000">FPV_GetVelocity</font> and <font color="#660000">FPV_SetLinkVelocity</font>.<br>
+  <br>
+  <br>
+  <b>Voice_Release</b><br>
+  This function signals that a specified voice (identified by the Handle parameter, 
+  which is the value that was returned by the TriggerVoice function) should enter 
+  the releasing state. This is a note off in midi terms. You can call Voice_Kill 
+  in PlugHost if your generator doesn't support releasing voices. Otherwise you'll 
+  probably set a flag in your voice structure and let it die out.</p>
+<p>The codes <font color="#660000">FPV_GetRelVelocity</font> and <font color="#660000">FPV_GetRelTime</font> 
+  can be used to retrieve more information about the released voice.<br>
+  <br>
+  <br>
+  <b>Voice_Kill</b><br>
+  When FL Studio has no more need for a voice (identified by the Handle parameter), 
+  it will call this function. You need to free all memory that you allocated for 
+  this voice in the TriggerVoice function. <br>
+  <br>
+  The plugin can tell FL Studio that it wants to kill a voice. In that case, the 
+  plugin shouldn't call Voice_Kill (or free any memory) itself for that voice 
+  if it has called Voice_Kill in PlugHost with the KillHandle parameter set to 
+  true. FL Studio will take care of calling Voice_Kill on the plugin.<br>
+  <br>
+  Also, make sure you kill all voices that are left when the plugin is destroyed.<br>
+  <br>
+  <br>
+  <b>Voice_ProcessEvent</b><br>
+  This function will get called when a voice event occurs. The only <a href="../constants.html#_voiceeventids">voice 
+  event</a> at the moment is <font color="#660000">FPV_Retrigger</font>.</p>
+</body>
+</html>

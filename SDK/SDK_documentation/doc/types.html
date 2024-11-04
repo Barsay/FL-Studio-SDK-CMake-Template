@@ -1,0 +1,282 @@
+<html>
+<head>
+<title>Types</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="20" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Types</font></b></td>
+  </tr>
+</table>
+<ul>
+  <li> <a href="#_TFPTime">TFPTime</a></li>
+  <li><a href="#_midioutmsg">TMIDIOutMsg</a></li>
+  <li><a href="#_TNoteParams">TNoteParams</a></li>
+  <li><a href="#_TNotesParams">TNotesParams</a></li>
+  <li><a href="#_TParamMenuEntry">TParamMenuEntry</a> </li>
+  <li><a href="#_TSampleInfo">TSampleInfo</a></li>
+  <li><a href="#_TSampleRegion">TSampleRegion</a></li>
+  <li><a href="#_TWAV32FS">TWAV32FS</a></li>
+  <li><a href="#_TWaveT">TWaveT</a></li>
+</ul>
+<p>&nbsp;</p>
+<p><b> <a name="_TWaveT"></a>TWaveT</b> (fp_def)<br>
+  This is the type of published wavetables. </p>
+<p><i><font color="#CC0000">Delphi</font></i></p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">TWaveT = array[0..WaveT_Size-1] of single;<br>PWaveT = ^TWaveT;</font></pre>
+    </td>
+  </tr>
+</table>
+<p> <i><font color="CC0000">C++</font></i> </p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">float TWaveT[WaveT_Size];
+TWaveT *PWaveT;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><b><a name="_TWAV32FS"></a>TWAV32FS</b> (fp_def)<br>
+  The type for an interlaced stereo 32Bit float buffer. The first dimension of 
+  the array gives you an index into the audio data, while the second dimension 
+  specifies whether you want to access the left (0) or right (1) channel.<br>
+  <br>
+  <font color="CC0000"><i>Delphi</i></font></p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">TWAV32FS = array[0..0, 0..1] of single;
+PWAV32FS = ^TWAV32FS</font></pre>
+    </td>
+  </tr>
+</table>
+<p> <font color="CC0000"><i>C++</i></font> </p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">float TWAV32FS[1][2]; <br>TWAV32FS *PWAV32FS;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><b><a name="_midioutmsg"></a>TMIDIOutMsg</b> (fp_def)<br>
+  This record / struct is used as the parameter of the MidiOut function of TFruityPlugHost. 
+  It contains the three midi data bytes and the port on which to send.<br>
+  <br>
+  <i><font color="#CC0000">Delphi</font></i></p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">TMIDIOutMsg=Packed Record 
+  Status,
+  Data1,
+  Data2,
+  Port    : Byte; 
+End;</font></pre>
+    </td>
+  </tr>
+</table>
+<p> <font color="#CC0000"><i>C++</i></font></p>
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">typedef struct { 
+    unsigned char Status; 
+    unsigned char Data1; 
+    unsigned char Data2; 
+    unsigned char Port; 
+} TMIDIOutMsg, *PMIDIOutMsg;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><b><a name="_TNoteParams"></a>TNoteParams</b> (fp_plugclass)<br>
+  This structure describes a note that is going to be added to the piano roll.<br>
+  <br>
+  <i><font color="#CC0000">Delphi</font></i> </p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">TNoteParams=Record 
+  Position,Length :Integer; // in PPQ 
+
+  // levels 
+  Pan :Integer; // default=0 
+  Vol :Single; // default=100/128        
+  Note :Integer; // default=60 
+  Pitch :Integer; // default=0 
+  FCut,FRes :Single;        // default=0 
+End; </font></pre>
+    </td>
+  </tr>
+</table>
+<p> <i><font color="#CC0000">C++</font></i></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">typedef struct {
+    int Position;  // in PPQ
+    int Length;    // in PPQ
+               
+    // levels
+    int Pan;       // default=0
+    int Vol;       // default=100/128
+    int Note;      // default=60
+    int Pitch;     // default=0
+    float FCut;    // default=0
+    float FRes;    // default=0 
+    End;
+} TNoteParams;</font></pre>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><b><a name="_TNotesParams"></a>TNotesParams</b> (fp_plugclass)<br>
+  This structure holds information about the list of notes that has to be added 
+  to the piano roll (Also see <a href="constants.html#_TNotesParamsFlags">TNotesParams 
+  flags</a> for possible values of the Flags member).<br>
+  <br>
+  <font color="#CC0000"><i>Delphi</i></font></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">TNotesParams=Record 
+  Target :Integer;   // 0=step seq (not supported yet), 1=piano roll 
+  Flags :Integer;    // see NPF_EmptyFirst 
+  PatNum :Integer;   // -1 for current 
+  ChanNum :Integer;  // -1 for plugin's channel 
+  Count :Integer;    // the # of notes in the structure 
+  NoteParams:Array[0..0] of TNoteParams; // array of notes 
+End; 
+PNotesParams=^TNotesParams;</font></pre>
+    </td>
+  </tr>
+</table>
+<p><i><font color="#CC0000">C++</font></i></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td height="108"> 
+      <pre><font color="#3333FF">typedef struct {
+    int Target;              // 0=step seq (not supported yet), 1=piano roll
+    int Flags;               // see NPF_EmptyFirst
+    int PatNum;              // -1 for current
+    int ChanNum;             // -1 for plugin's channel
+    int Count;               // the # of notes in the structure
+    TNoteParams NoteParams[1];  // array of notes (variale size)
+} TNotesParams, *PNotesParams;</font>
+</pre>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><b><a name="_TParamMenuEntry"></a>TParamMenuEntry</b> (fp_plugclass)<br>
+  This structure is returned by the host Dispatcher function when it's called 
+  with FHD_GetParamMenuEntry. It describes an item that should be added to a control's 
+  right-click popup menu.<br>
+  <br>
+  <font color="#CC0000"><i>Delphi</i></font></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">TParamMenuEntry=Record 
+  Name :PChar;   // name of the menu entry (or menu separator if '-') 
+  Flags:Integer; // checked or disabled, see <a href="constants.html#_parampopupflags">FHP_Disabled</a>        
+End; PParamMenuEntry=^TParamMenuEntry;</font></pre>
+    </td>
+  </tr>
+</table>
+<p> <i><font color="#CC0000">C++</font> </i></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td>
+      <pre><font color="#3333FF">typedef struct {
+    char *Name;   // name of the menu entry (or menu separator if '-')
+    int Flags;    // checked or disabled, see <a href="constants.html#_parampopupflags">FHP_Disabled</a>
+} TParamMenuEntry, *PParamMenuEntry;</font>
+</pre>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><b><a name="_TSampleInfo"></a>TSampleInfo</b> (fp_plugclass)<br>
+  This structure can be obtained by a call to the GetSampleInfo method of TFruityPlugHost 
+  and provides more detailed information about a sample.<br>
+  <br>
+  <i><font color="#CC0000">Delphi</font></i></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr>
+    <td bordercolor="#FFFFFF"> <pre><font color="#3333FF">TSampleInfo=Packed Record
+  Size              :Integer;  // size of this structure, MUST BE SET BY THE PLUGIN
+  Data              :Pointer;  // pointer to the samples
+  Length            :Integer;  // length in samples
+  SolidLength       :Integer;  // length without ending silence
+  LoopStart,LoopEnd :Integer;  // loop points (LoopStart=-1 if no loop points)
+  SmpRateConv       :Double;   // host sample rate*SmpRateConv = sample rate<br>  NumRegions        :Integer;  // number of regions in the sample (see GetSampleRegion)<br>  NumBeats          :Single;   // length in beats<br>  Tempo             :Single;
+  NumChans          :Integer;  // 1=mono, 2=stereo, MUST BE SET BY THE PLUGIN, to -1 if all formats are accepted<br>  Format            :Integer;  // 0=16I, 1=32F, MUST BE SET BY THE PLUGIN, to -1 if all formats are accepted<br>  Reserved          :Array[0..12] of Integer;  // future use
+End;
+PSampleInfo=^TSampleInfo;</font></pre> 
+    </td>
+  </tr>
+</table>
+<p><i><font color="#CC0000"><br>
+  C++</font></i></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr>
+    <td bordercolor="#FFFFFF"> <pre><font color="#3333FF">typedef struct {<br>    int Size;              // size of this structure, MUST BE SET BY THE PLUGIN        <br>    void *Data;            // pointer to the samples <br>    int Length;            // length in samples<br>    int SolidLength;       // length without ending silence <br>    int LoopStart;<br>    int LoopEnd;           // loop points (LoopStart=-1 if no loop points) 
+    double SmpRateConv;    // host sample rate*SmpRateConv = sample rate
+    int NumRegions;        // number of regions in the sample (see GetSampleRegion)<br>    float NumBeats;        // length in beats<br>    float Tempo;  
+    int NumChans;          // 1=mono, 2=stereo, MUST BE SET BY THE PLUGIN, to -1 if all formats are accepted<br>    int Format;            // 0=16I, 1=32F, MUST BE SET BY THE PLUGIN, to -1 if all formats are accepted<br>    int Reserved[13];      // future use
+} TSampleInfo, *PSampleInfo;</font></pre> 
+    </td>
+  </tr>
+</table>
+<p>&nbsp; </p>
+<p><b><a name="_TSampleRegion" id="_TSampleRegion"></a>TSampleInfo</b> (fp_plugclass)<br>
+  This structure can be obtained by a call to the GetSampleRegion method of TFruityPlugHost.<br>
+  <br>
+  <i><font color="#CC0000">Delphi</font></i></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr> 
+    <td bordercolor="#FFFFFF"> <pre><font color="#0000FF">// sample region<br>TSampleRegion=Record<br>  SampleStart,SampleEnd:Integer;<br>  Name,Info   :Array[0..255] of Char;<br>  Time        :Single;         // beat position, mainly for loop dumping (-1 if not supported)<br>  KeyNum      :Integer;        // linked MIDI note number (-1 if not supported)<br>  Reserved    :Array[0..3] of Integer;<br>End;<br>PSampleRegion=^TSampleRegion;</font></pre> </td>
+  </tr>
+</table>
+<p><i><font color="#CC0000"><br>
+  C++</font></i></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr> 
+    <td bordercolor="#FFFFFF"> <pre><font color="#3333FF">// sample region<br>typedef struct {<br>    int SampleStart;<br>    int SampleEnd;<br>    char Name[256];<br>    char Info[256];<br>    float Time;         // beat position, mainly for loop dumping (-1 if not supported)<br>    int KeyNum;         // linked MIDI note number (-1 if not supported)<br>    int Reserved[4];<br>} TSampleRegion, *PSampleRegion;</font></pre></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><strong><a name="_TFPTime"></a>TFPTime</strong> (fp_plugclass)<br>
+  Time information record for FHD_GetMixingTime.<br>
+  <br>
+  <font color="#FF0000"><em>Delphi</em></font></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr>
+    <td height="68" bordercolor="#FFFFFF"> <pre><font color="#3333FF">TFPTime = Packed Record
+    t,t2:Double;
+end;
+PFPTime=^TFPTime;</font></pre></td>
+  </tr>
+</table>
+<p><br>
+  <font color="#FF0000"><em>C++</em></font></p>
+<table width="90%" border="1" bordercolor="#3333FF">
+  <tr>
+    <td bordercolor="#FFFFFF">
+<pre><font color="#3333FF">typedef struct {
+    double t, t2;
+} TFPTime, *PFPTime;</font></pre></td>
+  </tr>
+</table>
+<p> <br>
+</p>
+</body>
+</html>

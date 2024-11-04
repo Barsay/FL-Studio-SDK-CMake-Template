@@ -1,0 +1,416 @@
+<html>
+<head>
+<title>TFruityPlugHost</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="20" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">TFruityPlugHost</font></b></td>
+  </tr>
+</table>
+<p><b>Declared in :</b> FP_PlugClass (.pas / .h)</p>
+<p>This is the class used by the plugin to access the host. <br>
+  In the following tables, datatypes are represented as follows : (Delphi datatype 
+  / C++ datatype).</p>
+<p><a href="#_methods">Methods</a><br>
+  <a href="#_members">Members</a></p>
+<p><a name="_methods"></a><b>Methods</b></p>
+<table width="100%" border="0">
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">AddWave_32FM_32FS_Ramp</td>
+    <td>This function adds a 32bit floating point mono buffer to a 32bit floating 
+      point stereo buffer, with level adjustment and ramping (if necessary). For 
+      the LastLVol and LastRVol parameters, declare two floating point variables 
+      that are initially set to respectively LVol and RVol. After the first call 
+      to this function, you shouldn't change these variables anymore.<br> <i>Parameters 
+      :</i><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SourceBuffer</b> 
+      (pointer / void *) : The mono buffer containing the samples to be added 
+      to the destination buffer <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DestBuffer</b> 
+      (pointer / void *) : The stereo buffer into which the samples from the source 
+      buffer need to be added<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Length</b> 
+      (integer / int) : The number of samples in the buffers<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>LVol</b> 
+      (single / float) : The current volume for the left channel (0..1 or higher)<br> 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>RVol</b> (single / float) 
+      : The current volume for the right channel (0..1 or higher)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>LastLVol</b> 
+      (var single / float &amp;) : The volume will be ramped from this value to 
+      LVol. <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>LastRVol</b> 
+      (var single / float &amp;) : The volume will be ramped from this value to 
+      RVol.<br> <i>Result :</i> none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">AddWave_32FS_32FS_Ramp</td>
+    <td>This function adds a 32bit floating point stereo buffer to a 32bit floating 
+      point stereo buffer, with level adjustment and ramping (if necessary). For 
+      the LastLVol and LastRVol parameters, declare two floating point variables 
+      that are initially set to respectively LVol and RVol. After the first call 
+      to this function, you shouldn't change these variables anymore.<br> <i>Parameters 
+      :</i><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SourceBuffer</b> 
+      (pointer / void *) : The stereo buffer containing the samples to be added 
+      to the destination buffer <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DestBuffer</b> 
+      (pointer / void *) : The stereo buffer into which the samples from the source 
+      buffer need to be added<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Length</b> 
+      (integer / int) : The number of samples in the buffers<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>LVol</b> 
+      (single / float) : The current volume for the left channel (0..1 or higher)<br> 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>RVol</b> (single / float) 
+      : The current volume for the right channel (0..1 or higher)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>LastLVol</b> 
+      (var single / float &amp;) : The volume will be ramped from this value to 
+      LVol. <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>LastRVol</b> 
+      (var single / float &amp;) : The volume will be ramped from this value to 
+      RVol.<br> <i>Result :</i> none </td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">CloseSample</td>
+    <td> This function closes a sample that was previously opened with LoadSample. 
+      <br> <i>Parameters :</i> <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Handle</b> 
+      (TSampleHandle) : The handle of the sample to be closed<br> <i>Result</i> 
+      : none </td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td>ComputeLRVol</td>
+    <td>Call this if you want to calculate the left and right channel volume from 
+      a pan and volume value<br> <i>Parameters :</i><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>LVol</b> 
+      (var single / float &amp;) : This variable will hold the left channel volume 
+      on return<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>RVol</b> 
+      (var single / float &amp;) : This variable will hold the right channel volume 
+      on return<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Pan</b> 
+      (single / float) : The pan to be applied to the volume<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Volume</b> 
+      (single / float) : The volume which you want the pan to be applied to<br> 
+      <i>Result :</i> none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td>ComputeLRVol_Old</td>
+    <td>This function has been replaced by ComputeLRVol and shouldn't be used.</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Dispatcher</td>
+    <td>Call this to send a message to the host<br> <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> 
+      (integer / int) : The identification of the plugin to the host. This has 
+      to be set to the plugin's HostTag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ID</b> 
+      (integer / int) : The message identification (see <a href="constants.html#_hostdispatcherids">Host 
+      Dispatcher IDs</a>).<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Index</b> 
+      (integer / int) <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Value</b> 
+      (integer / int) <br> <i>Result</i> (integer / int)</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%"> DistWave_32FM<br> </td>
+    <td>This allows a plugin to use the same distortion that's used by the TS404<br> 
+      <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DistType</b> 
+      (integer/int) : 0 (mono) or 1 (stereo)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DistThres</b> 
+      (integer/int) : 0..10<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SourceBuffer</b> 
+      (pointer/void *) : a pointer to the buffer to process<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Length</b> 
+      (integer/int) : the number of samples in the buffer (for one channel if 
+      stereo)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DryVol</b> 
+      (single/float) : the dry level (0..1)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>WetVol</b> 
+      (single/float) : the wet level (0..1)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mul</b> 
+      (single/float)<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">GetInsBuffer</td>
+    <td> Retrieve a pointer to the insert buffer following the buffer a generator 
+      is currently processing in. This function is reserved for the Fruity wrapper 
+      (so it may change in the future). Use only from inside Gen_Render.<br> <i>Parameters</i> 
+      :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Ofs</b> (integer/int) 
+      : the offset to the current buffer. 0 means the same buffer as passed to 
+      Gen_Render, +1 means next insert track<br> <i>Result</i> (pointer/void *): 
+      a pointer to the buffer<br> </td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">GetMixBuffer</td>
+    <td>Call this to get a pointer to one of the send buffers (like GetSendBuffer). 
+      This function can be used by <b>generators</b> ONLY, &amp; only while processing.<br> 
+      <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Num</b> 
+      (integer/int): an offset to the mixer track assigned to the generator, like 
+      +1 or +2. If Num is 0, the function will return the current rendering buffer.<br> 
+      <i>Result</i> (pointer/void *) : a pointer to the buffer, which can be typecast 
+      to a PWAV32FS</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">GetSampleData</td>
+    <td> Retrieves a pointer to the sample data.<br> <i>Parameters :</i> <br> 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Handle</b> (TSampleHandle) 
+      : The handle of the sample (obtained with LoadSample)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Length</b> 
+      (var int / int &amp;) : The number of samples in the sample data buffer<br> 
+      <i>Result</i> (pointer / void *) : a pointer to the sample data</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">GetSendBuffer</td>
+    <td> Call this to get a pointer to one of the send buffers (see FPD_SetNumSends). 
+      Those pointers are variable, please read &amp; use while rendering only. 
+      The size of those buffers is the same as the size of the rendering buffer 
+      requested to be rendered.<br> <i>Parameters</i> : <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Num</b> 
+      (integer / int) : the index of the send buffer<br> <i>Result</i> (pointer 
+      / void *) : a pointer to the buffer, which can be typecast to a PWAV32FS</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">GetSampleInfo</td>
+    <td>You can call this method to obtain more information about a certain sample.<br> 
+      <i>Parameters</i> : <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Handle</b> 
+      (TSampleHandle) : the handle of the sample to get info for<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Info</b> 
+      (PSampleInfo) : a pointer to a structure that will receive the information 
+      requested. Don't forget to set the structure's Size member to the size of 
+      the structure! <br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td>GetSampleRegion</td>
+    <td>Get information about a region in a sample.<br> <em>Parameters : </em><br> 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Handle</strong> 
+      (TSampleHandle) : the handle of the sample to get the region information 
+      for <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>RegionNum</strong> 
+      (integer / int) : the index of the region, starting from zero<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Region</strong> 
+      (PSampleRegion) : a record/structure that will hold the region information. 
+      Don't forget to set the Size field to a valid value first!<br> <em>Result 
+      :</em> none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">GetSongMixingTime</td>
+    <td> Retrieve the current mixing time, in ticks<br> <i>Result </i>(integer 
+      / int) : the current time</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">GetSongMixingTime_A</td>
+    <td> Get the current mixing time, in ticks. This version is more accurate, 
+      with decimals.<br> <i>Result</i> (double) : the current time</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">GetSongPlayingTime</td>
+    <td> Ask the host for the current playing time, in ticks (with decimals)<br> 
+      <i>Result</i> (double) : the current playing time</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">LoadSample</td>
+    <td> Load a sample from file<br> <i>Parameters :</i> <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Handle</b> 
+      (var TSampleHandle / TSampleHandle &amp;) : On return, this will hold the 
+      handle for the sample that was just loaded<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>FileName</b> 
+      (pchar / char *) : The filename of the sample to load. This buffer should 
+      be big enough to hold 256 characters (and the trailing zero). On return, 
+      the filename that was loaded has been filled in by the host. For example, 
+      this could be the filename that the user selected when the FHLS_ShowDialog 
+      opcode was sent to the host.<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>NeededFormat</b> 
+      (PWaveFormatExtensible) : The format you'd like the loaded wave to be. At 
+      the moment, only 16bit, 44.1KHz is supported, but fill it in correctly anyway. 
+      On return, it will hold the actual format of the loaded wave.<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Flags</b> 
+      (integer / int) :<br> <i>Result</i> (boolean / bool) : If true, the sample 
+      has been loaded correctly. If false, the function failed</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">LockMix</td>
+    <td bgcolor="#CCCCDD">This is a function for thread synchronization. When 
+      this is called, no more voices shall be created and there will be no more 
+      rendering until UnlockMix has been called<br> <i>Parameters</i> : <br>
+      <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td>LockMix_Shared</td>
+    <td> <font color="#660000" size="-1">(FL 7.0) </font>Call this to protect 
+      processing code to be protected from being processed in multiple threads.<br>
+      <i>Parameters</i> : none<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td>LockPlugin</td>
+    <td>This is an alternative to LockMix. It won't freeze the audio. This function 
+      can only be called from the GUI thread! Warning: this function is not very 
+      performant, so avoid using it if possible.<br>
+      <i>Parameters</i> : none<br> 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sender</strong> 
+      (integer / int) : the HostTag value for this plugin <br> <i>Result</i> : 
+      none </td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">MIDIOut</td>
+    <td> Send a MIDI out message. Unlike MIDIOut_Delayed, this function immediately 
+      sends the message.<br> <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> 
+      (integer / int) : The identification of the plugin to the host. This has 
+      to be set to the plugin's HostTag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Msg</b> 
+      (integer / int) : The midi paramaters and the port. See <a href="types.html">TMIDIOutMsg</a> 
+      for an easier way to work with these. You can cast a TMIDIOutMsg as an integer 
+      for this parameter.<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">MIDIOut_Delayed</td>
+    <td>Send a delayed MIDI out message. This message will actually be sent when 
+      the MIDI tick has reached the current mixer tick.<br> <i>Parameters</i> 
+      :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> (integer 
+      / int) : The identification of the plugin to the host. This has to be set 
+      to the plugin's HostTag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Msg</b> 
+      (integer / int) : The midi paramaters and the port. See <a href="types.html">TMIDIOutMsg</a> 
+      for an easier way to work with these. You can cast a TMIDIOutMsg as an integer 
+      for this parameter.<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">OnControllerChanged</td>
+    <td>This will be called by an event controller plugin when a controller has 
+      changed. <br>
+      Parameters :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> 
+      (integer / int) : The plugin's HostTag member<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Index</b> 
+      (integer / int) : The index of the controller that has changed<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Value</b> 
+      : The new value for this controller<br> <i>Result </i>: none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">OnHint</td>
+    <td>Let the host show a hint, as specified by the parameters<br> <i>Parameters</i> 
+      :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> (integer 
+      / int) : The identification of the plugin to the host. This has to be set 
+      to the plugin's HostTag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Text</b> 
+      (pchar / char *) : The text to show as a hint. The plugin is responsible 
+      for the memory that holds this text. If your parameter is recordable and/or 
+      can be linked to a midi controller, you can add this to the hint. The way 
+      to do this is include either or both of &quot;^a&quot; (can link to a midi 
+      controller) and &quot;^b&quot; (is recordable) at the <i>beginning</i> of 
+      the message. FL Studio then shows one or more icons.<br> <i>Result</i> : 
+      none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">OnParamChanged</td>
+    <td>Notify the host that a parameter value has changed<br> <i>Parameters</i> 
+      : <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> (integer 
+      / int) : The identification of the plugin to the host. This has to be set 
+      to the plugin's HostTag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Index</b> 
+      (integer / int) : The parameter index<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Value</b> 
+      (integer / int) : The new parameter value.<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">PlugMsg_Delayed</td>
+    <td> Ask for a message to be dispatched to itself when the current mixing 
+      tick will be played (to synchronize stuff) (see MsgIn). The message is guaranteed 
+      to be dispatched, however it could be sent immediately if it couldn't be 
+      buffered (it's only buffered when playing).<br> <i>Parameters</i> :<br> 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> (integer / 
+      int) : the plugin's HostTag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Msg</b> 
+      (integer / int) : the message to be sent<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">PlugMsg_Kill</td>
+    <td> Remove a buffered message, so that it will never be dispatched.<br> <i>Parameters</i> 
+      :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> (integer 
+      / int) : the plugin's HostTag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Msg</b> 
+      (integer / int) : the previously sent message to be killed<br> <i>Result</i> 
+      : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">PromptEdit</td>
+    <td> 
+      <p>Ask the host to prompt the user for a piece of text. <br>
+        <i>Parameters</i> : <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>x</b> (integer / int) 
+        : the horizontal position of the popup window. Set to -1 to have the popup 
+        centered horizontally.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>y</b> (integer / int) 
+        : the vertical position of the popup window. Set to -1 to have the popup 
+        centered vertically.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SetCaption</b> (pchar 
+        / char *) : the caption of the popup window<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>s</b> (pchar / char 
+        *) : the text typed in by the user will be copied into this string. Set 
+        this to a valid string value (like an empty string) when calling the function. 
+        It should have room for 256 characters.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>c</b> (var integer 
+        / int &amp;) : the user can select a color, which will be returned in 
+        this parameter. Set it to -1 if you don't want the user to select a color.<br>
+        <i>Result</i> (boolean / bool) : if true, the user closed the popup window 
+        by clicking OK, else he clicked Cancel (ignore the results in this case).<br>
+      </p></td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td>ResumeOutput</td>
+    <td>Unlocks the mixer thread if it was previously locked with ResumeOutput.<br> 
+      <i>Parameters</i> : none<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td>SuspendOutput</td>
+    <td>This is a function for thread synchronization. When this is called, no 
+      more voices shall be created and there will be no more rendering until ResumeOutput 
+      has been called. Unlike LockMix, this function also stops all sound.<br> 
+      <i>Parameters</i> : none<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">Voice_Release</td>
+    <td>Tell the host the specified voice should be silent (Note Off)<br> <i>Parameters</i> 
+      :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> (integer 
+      / int) : The voice tag <br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Voice_Kill</td>
+    <td>Tell the host that the specified voice can be killed (freed from memory)<br> 
+      <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> 
+      (integer / int) : The voice tag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>KillHandle</b> 
+      (longbool / BOOL) : if True, it forces Fruity to ask the plugin to destroy 
+      its voice, in case the plugin is still using that voice handle. Use False 
+      if the handle has been destroyed already by the plugin <br> <i>Result</i> 
+      : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top"> 
+    <td width="17%">Voice_ProcessEvent</td>
+    <td>Tell the host that some event has happened concerning the specified voice<br> 
+      <i>Parameters</i> :<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sender</b> 
+      (integer / int) : The voice tag<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>EventID</b> 
+      (integer / int) : The identification of the event that occurred (see <a href="constants.html#_voiceeventids">Voice 
+      Event ID constants</a>)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>EventValue</b> 
+      (integer / int) <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Flags</b> 
+      (integer / int) <br> <i>Result</i> (integer / int)</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">UnlockMix</td>
+    <td>Unlocks the mix thread if it was previously locked with LockMix<br> <i>Parameters</i> 
+      : none<br> <i>Result</i> : none</td>
+  </tr>
+  <tr bgcolor="#DDDDEE" valign="top">
+    <td>UnlockMix_Shared</td>
+    <td><font color="#660000" size="-1">(FL 7.0) </font>Call this to unlock processing 
+      code after a previous call to LockMix_Shared<br>
+      <i>Parameters</i> : none<br> <i>Result</i> : none </td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td>UnlockPlugin</td>
+    <td>Unlocks the mix thread if it was previously locked with LockPlugin. Warning: 
+      this function is not very performant, so avoid using it if possible.<br> 
+      <i>Parameters</i> : <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sender</strong> 
+      (integer / int) : the HostTag value for this plugin<br> <i>Result</i> : 
+      none</td>
+  </tr>
+</table>
+<p><a name="_members"></a><b>Members</b></p>
+<table width="100%" border="0">
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td bgcolor="DDDDEE" width="17%">HostVersion</td>
+    <td>(integer / int) : The version of FL Studio. It is stored in one integer. 
+      If the version of FL Studio would be 1.2.3 for example, HostVersion would 
+      be 1002003</td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">Flags</td>
+    <td>(integer / int) (not used yet)</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td bgcolor="DDDDEE" width="17%">AppHandle</td>
+    <td>(THandle / HANDLE) : The handle of the application, to be used when creating 
+      windows </td>
+  </tr>
+  <tr bgcolor="#CCCCDD" valign="top"> 
+    <td width="17%">WaveTables</td>
+    <td bgcolor="#CCCCDD">(array[0..9] of PWaveT / PWaveT[10]) : These are maximum 
+      10 predefined wavetables. For the moment there are only five (sine, triangle, 
+      square, saw, analog saw). Each wavetable contains 16384 samples in the range 
+      -1.0 to +1.0<br>
+      Note: these pointers are fixed</td>
+  </tr>
+  <tr bgcolor="DDDDEE" valign="top"> 
+    <td bgcolor="DDDDEE" width="17%">TempBuffers</td>
+    <td><p>This is an array that holds pointers to temporary mixing buffers. These 
+        can be used freely by the plugin when it needs a buffer at some point 
+        during mixing. They are guaranteed to hold as many samples as are being 
+        processed.<br>
+        Note : for hybrid generators, the first buffer may be in use already, 
+        so only use the others.<br>
+        Note 2 : these buffers are to be used only during rendering, not to hold 
+        data between rendering slices<br>
+        Note 3: these buffers are contiguous, so you can see TempBuffer[0] as 
+        a huge buffer<br>
+      </p>
+      </td>
+  </tr>
+</table>
+<p>&nbsp; </p>
+</body>
+</html>

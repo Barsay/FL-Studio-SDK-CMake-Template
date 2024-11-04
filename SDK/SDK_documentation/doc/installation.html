@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>Installing plugins</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="10" border="0" bgcolor="EEEEFF">
+  <tr>
+    <td><b><font size="5">Installing&nbsp;plugins</font></b></td>
+  </tr>
+</table>
+<p><b>General</b><br>
+  FL Studio plugins have to be installed in subfolders of the FL Studio\Plugins\Fruity 
+  folder. Effect plugins have to be placed in the Effects subfolder, generators 
+  have to go into the Generators subfolder.<br>
+  <br>
+  Plugins must be placed within their own subfolder of either the Effects or Generators 
+  folder. This folder has to have the same name as the plugin dll. For example, 
+  a gain plugin file with the name Wawza.dll would be placed inside the <font color="#990000">Plugins\Fruity\Effects\Wawza</font> 
+  folder. <br>
+  <br>
+  <b>Installer</b><br>
+  The FruityPlug sdk includes an installer tool. In the bin folder, you can find 
+  the FPSetup.exe file. This is meant to be called from the program you use to 
+  unarchive (unzip, unrar or whatever) your plugin files. For example, it's possible 
+  to configure the WinZip self extracting archives to run a program when the extraction 
+  is complete. Alternatively, you could include FPSetup.exe in a zip file and 
+  tell the user to run it (although the first option is nicer to the user).<br>
+  <br>
+  FPSetup takes some effort out of the hands of the plugin developer (you) because 
+  it looks for the folder where FL Studio is installed. Take care : FPSetup is 
+  designed to work with FruityLoops 3 and FL Studio 4.x and higher, not with any 
+  2.x version. It won't find the FL Studio folder for any 2.x version of FL Studio.<br>
+  <br>
+  The files to be installed have to be put in a folder inside the folder where 
+  FPSetup.exe is located. So, for a plugin with name Wawza.dll, you would have 
+  a folder with the name Wawza inside your archive. <br>
+  <br>
+  Optionally, you can include presets to be installed by FPSetup. These have to 
+  be put in a subfolder called Presets (so Wawza\Presets for the Wawza.dll example). 
+  <br>
+  You can also have files copied into a location relative to the base FL Studio 
+  folder. To do this, put those files in a subfolder called Fruityloops (so Wawza\Fruityloops 
+  for the Wawza.dll example).
+<p>We do advise using a proper installer for plugins. The free <a href="http://nsis.sourceforge.net">NSIS</a> 
+  program works very well and can be extended to do just about anything very easily.<br>
+  <br>
+  <b>The script</b><br>
+  FPSetup requires a script file to know what it has to do. <br>
+  If no parameter is provided on the commandline, it assumes the script file is 
+  called &quot;fpsetup.scr&quot;. You can also instruct it to use an other file 
+  by calling FPSetup like this : &nbsp;&quot;fpsetup -f scriptfile.scr&quot; (without 
+  the &quot; characters). <br>
+  The content of the scriptfile is very simple. You can look at the fruitymonitor.scr 
+  file in the tools folder for an example. <br>
+  <br>
+  There are two lines that are required in a script file : 
+<table width="95%" border="1" bordercolor="#3333FF">
+  <tr bordercolor="#FFFFFF"> 
+    <td> 
+      <pre><font color="#3333FF">PluginName = Dll Name
+Type = Plugin Type</font> </pre></td>
+  </tr>
+</table>
+<p>Make sure there is at least one space at each side of the = character. <br>
+  <br>
+  <i>Type</i> can be either Effect or Generator. This tells FPSetup whether it 
+  has to install the plugin in Plugins\Fruity\Effects or Plugins\Fruity\Generators. 
+  <br>
+  <br>
+  <i>PluginName</i> has to be the name of the plugin dll, without the .dll extension.<br>
+  <br>
+  There can also be comments in the file. Everything on a line after a double 
+  slash ( // ) or a single quote ( ' ) is considered a comment. 
+<p><b>Examples</b> </p>
+<ul>
+  <li>Contents of a script file for an effect plugin with filename Wawza.dll 
+    <table width="95%" border="1" bordercolor="#3333FF">
+      <tr bordercolor="#FFFFFF"> 
+        <td><pre><font color="#3333FF">PluginName = Wawza
+Type = Effect</font></pre></td>
+      </tr>
+    </table>
+    <br>
+  </li>
+  <li>Contents of a script file for a generator plugin with filename Wohow.dll 
+    <table width="95%" border="1" bordercolor="#3333FF">
+      <tr bordercolor="#FFFFFF"> 
+        <td> 
+          <pre><font color="#3333FF">PluginName = Wohow<br>Type = Generator</font></pre></td>
+      </tr>
+    </table>
+    <br>
+    <pre>&nbsp;</pre>
+  </li>
+</ul>
+</body>
+</html>

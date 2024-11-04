@@ -1,0 +1,155 @@
+<html>
+<head>
+<title>Parameters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<p><a href="principles.html">First</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href="processing.html">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="messages.html">Next</a> 
+</p>
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Parameters</font></b></td>
+  </tr>
+</table>
+<p>Fruity plugins can have parameters. The amount of parameters a plugin can have 
+  is not limited. It could be zero, 1, 2, 1000, ... . Note however that there 
+  is a limit on the number of parameters FL will show to the user (currently 4096).</p>
+<p> For FL Studio to be able to know how many parameters a plugin has, the plugin 
+  needs to set the NumParams member of its TFruityPlugInfo structure to the amount 
+  of parameters. This field is a maximum, which you can override by calling the 
+  host dispatcher function with the id <font color="#990000">FHD_SetNumParams</font>.<br>
+  <br>
+  There are several functions that apply to parameters: GetName, ProcessParam 
+  and SaveRestoreState. There are also a couple of other funcions that have to 
+  do with parameters in the host class (see <a href="host.html">Talking to the 
+  host</a>).<br>
+  <br>
+  <br>
+  <b>GetName</b><br>
+  FL Studio calls GetName when it wants something expressed in a user-readable 
+  string. The Section parameter specifies what exactly the host wants a string 
+  for. For the moment, there are four possible values for Section : FPN_Param, 
+  FPN_ParamValue, FPN_Semitone and FPN_Patch. The Text paramer is a pointer to 
+  a string (pchar / char *) that will hold the string representation.<br>
+  <br>
+  Apart from FPN_Param, the GetName sections are all optional. You can support 
+  them if you want to, but it's not necessary.<br>
+  <br>
+  <font color="#660000">FPN_Param</font> means the function should put the name 
+  of the parameter in Text. Index specifies which parameter.<br>
+  <br>
+  <font color="#660000">FPN_ParamValue</font> means that the function should translate 
+  a value of a parameter to a string. Index specifies which parameter, Value is 
+  the value to be translated. This is used by FL Studio in the event editor to 
+  show something different from 0..100%<br>
+  <br>
+  <font color="#660000">FPN_Semitone</font> is not about parameters. It is called 
+  when FL Studio wants a string representation of a note (for in the piano roll). 
+  This is meant for drum machines, that have a different name for each note. Index 
+  specifies which note is to be translated.<br>
+  <br>
+  <font color="#660000">FPN_Patch</font> is not used yet.<br>
+  <br>
+  <font color="#660000">FPN_VoiceLevel</font> is used to get the names of the 
+  per-voice parameters.<br>
+  <br>
+  <font color="#660000">FPN_VoiceLevelHint</font> can be nice if you also want 
+  to specify a longer description of a per-voice parameter.<br>
+  <br>
+  <font color="#660000">FPN_Preset</font> is used to determine the names of the 
+  plugin's internal presets (if any). Most Fruity plugins don't have internal 
+  presets, as it's very easy to just provide an .fst preset. The latter one will 
+  also show up in the sample browser, so it might be more convenient for the user.<br>
+  <br>
+  <font color="#660000">FPN_OutCtrl</font> is called for plugins that export internal 
+  controllers. You can (must) provide a name for the specified controller.<br>
+  <br>
+  <br>
+  <b>ProcessParam</b><br>
+  ProcessParam gets called when some parameter has changed or when FL Studio wants 
+  the value of a parameter. The plugin itself can also call this function if it 
+  wants to. Take a good look at the ProcessParam function in the demos. The order 
+  in which things are done there should be respected.<br>
+  <br>
+  Index holds the parameter index and Value holds a new value (if the value has 
+  to be changed).<br>
+  <br>
+  RECFlags tells you what has to be done. It's a bitfield (see <a href="../bitfields.html">Working 
+  with bitfields</a>). It can hold a combination of <a href="../constants.html#_processparam">ProcessParam 
+  flags</a>. The order in which you handle the different flags is important (see 
+  the examples for more info). There are at the moment 5 flags that a plugin has 
+  to respond to.<br>
+  <br>
+  First, you need to check if <font color="#660000">REC_FromMIDI</font> is included. 
+  If it is, this means that the Value parameter contains a value between 0 and 
+  65536. This Value then needs to be translated to fall in the range that the 
+  plugin uses for the parameter. For this reason, TDelphiFruityPlug and TCPPFruityPlug 
+  implement the function TranslateMidi. You pass it Value and the minimum and 
+  maximum value of your parameter, and it returns the right value.<br>
+  REC_FromMIDI is really important and has to be supported by the plugin. It is 
+  not just used by FL Studio to provide you with a new parameter value, but also 
+  to determine the minimum and maximum values for a parameter.<br>
+  <br>
+  Then check whether either <font color="#660000">REC_UpdateValue</font> or <font color="#660000">REC_GetValue</font> 
+  are included. These two flags can never be present at the same time. <br>
+  <br>
+  In the case of <font color="#660000">REC_UpdateValue</font>, Value holds the 
+  new parameter value. You should of course check for REC_FromMidi and adjust 
+  the Value when necessary (see above). This flag could be specified both when 
+  the function is being called from the mixer thread as when it's called from 
+  the main thread.<br>
+  Be ware : you should not update the control for the parameter yet. Only when 
+  <font color="#660000">REC_UpdateControl</font> is specified as well should the 
+  control be updated. This is for performance reasons. REC_UpdateControl is guaranteed 
+  to only be called from the main thread, so it shouldn't be a problem if you 
+  update the control without locking the threads.<br>
+  <br>
+  Also pay attention to <font color="#660000">REC_InternalCtrl</font> if your 
+  plugin exports controllers, in order to avoid feedback of internal controller 
+  changes. <br>
+  <br>
+  If <font color="#660000">REC_GetValue</font> is included, you have to return 
+  the current value of the parameter as the result of the function. This means 
+  you should return the value that your plugin uses, not the one that is provided 
+  in Value.<br>
+  If REC_GetValue is not included, you have to return the Value parameter as the 
+  result of your function. Of course, when REC_FromMIDI is present you first need 
+  to translate Value (see above).<br>
+  <br>
+  The plugin doesn't have to react to the <font color="#660000">REC_ShowHint</font> 
+  flag. If it does, the plugin should either tell FL Studio to show a hint (see 
+  <a href="host.html">Talking to the host</a>) or show a hint on its own. However, 
+  if this flag is not included, the plugin should definitely not show a hint from 
+  ProcessParam. <br>
+  <br>
+  <font color="#660000">REC_PlugReserved</font> can be used internally for your 
+  plugin. FL Studio definitely won't ever use this value.<br>
+  <br>
+  Look at the examples to see exactly what should happen when each of these flags 
+  is included in RECFlags.<br>
+  <br>
+  <br>
+  <b>SaveRestoreState</b><br>
+  This function gets called to save and restore the state (mostly parameters normally) 
+  of a plugin. For example, the FL Studio custom preset mechanism uses this function.<br>
+  <br>
+  This is a very simple function. The boolean Save parameter specifies whether 
+  the plugin has to save (Save=true) or restore (Save=false) the state.<br>
+  <br>
+  The Stream parameter (a pointer to an IStream object) can then be used to actually 
+  read or write the state. It has a Write function that takes three parameters: 
+  a pointer to the variable being saved, the size of what is being saved and finally 
+  a pointer to a variable that will receive the total number of bytes saved. The 
+  Read function works the same way (but the last parameter receives the number 
+  of bytes that were read). For a full explanation of IStream, see the Windows 
+  API help files.</p>
+<p>One thing to make sure when implementing this function, is that exactly the 
+  same amount of data is read from the stream as was previously written to it. 
+  If you don't do this, there's no telling what may go wrong as further reading 
+  from the stream will return the wrong data ! So it would be a good idea to first 
+  write a version number (if your plugin's implementation might change in the 
+  future) and the length of the block you're going to write (so it can be skipped 
+  if unknown).</p>
+</body>
+</html>

@@ -1,4 +1,4 @@
-project(Osc3_VC)
+project(Osc3_VC_x64)
 
 add_library(${PROJECT_NAME} SHARED
         EditorDialog.h EditorDialog.cpp

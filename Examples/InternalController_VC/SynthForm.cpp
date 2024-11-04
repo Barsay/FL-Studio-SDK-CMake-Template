@@ -4,7 +4,7 @@
 #include "StdAfx.h"
 #include "FruityPlug.h"
 #include "SynthForm.h"
-#include "../../../../Desktop/FLSDK/source/c/fp_plugclass.h"
+#include "fp_plugclass.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

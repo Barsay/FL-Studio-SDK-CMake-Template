@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Working with bitfields</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="10" border="0">
+  <tr bgcolor="EEEEFF"> 
+    <td><b><font size="5">Working&nbsp;with&nbsp;bitfields</font></b></td>
+  </tr>
+</table>
+<p>A bitfield is a normal integer value. So in Delphi, it could be a <b>byte</b> 
+  or a <b>longint</b> for example. In C++, it could be a <b>char</b> or a <b>long 
+  int</b> or an <b>int</b> for example. </p>
+<p>Normally, a variable has a meaning as a whole. So a value of 6 would mean exactly 
+  that : six. <br>
+  In a bitfield, each bit of the variable has a certain meaning. Bit 1 = 1, bit 
+  2 = 2, bit 3 = 4, bit 4 = 8 and so on. <br>
+  <font size="-1" color="#660000">(the rule for calculating the value of a certain 
+  bit is the following : bitvalue = 2 ^ (bitnumber-1) )</font><br>
+  This makes it possible to use each bit to specify a state (0 or 1, true or false).</p>
+<p>To <b>set</b> a certain bit to 1, you OR the current value with the bitvalue. 
+  <br>
+  To set bit 3 (bitvalue = 4) of the variable Temp for example, you would do the 
+  following :<br>
+  <font color="#660000"><i><font color="#CC0000">Delphi :</font></i></font> &nbsp;Temp 
+  := Temp or 4;<br>
+  <font color="#CC0000"><i>C++ :</i></font> &nbsp;Temp |= 4; </p>
+<p>To <b>reset</b> a certain bit (set it to 0), you AND the current value with 
+  the inverse bitvalue. <br>
+  So to reset bit 3 (bitvalue = 4) of the variable Temp for example, do the following 
+  :<br>
+  <i><font color="#CC0000">Delphi :</font></i> &nbsp;Temp := Temp and not 4;<br>
+  <i><font color="#CC0000">C++ :</font></i> &nbsp;Temp &amp;= !4;</p>
+</body>
+</html>
