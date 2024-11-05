@@ -15,7 +15,7 @@ It is recommended to use a CMake-based IDE (e.g. CLion, a properly configured VS
 This is a CMake-based project: you will need to [install CMake](https://cmake.org/download/) into your system in order to use it.
 
 ### MFC
-You will need to add mfc components for visual studio. Best way to do so is by using Visual Studio Installer:
+To compile the examples, you will need to add mfc components for visual studio. Best way to do so is by using Visual Studio Installer:
 - Open Visual Studio Installer: Locate Visual Studio Installer in the Start menu and open it.
 - Select Your Version: Find the version of Visual Studio you are using and click on Modify.
 - Click on the Individual Components bar.
